@@ -1,0 +1,545 @@
+{
+  "meta": {
+    "name": "Soul Harvester",
+    "version": "1.0.0",
+    "description": "Example idle game configuration for the simulator",
+    "tickRate": 100
+  },
+
+  "resources": [
+    {
+      "id": "souls",
+      "name": "Souls",
+      "initial": "30",
+      "min": "0",
+      "tags": ["currency", "harvestable"]
+    },
+    {
+      "id": "darkEssence",
+      "name": "Dark Essence",
+      "initial": "0",
+      "min": "0",
+      "tags": ["currency", "prestige"]
+    },
+    {
+      "id": "harvesters",
+      "name": "Harvesters",
+      "initial": "0",
+      "min": "0",
+      "tags": ["building"]
+    },
+    {
+      "id": "ritualAltars",
+      "name": "Ritual Altars",
+      "initial": "0",
+      "min": "0",
+      "tags": ["building"]
+    },
+    {
+      "id": "d6",
+      "name": "Six-Sided Die",
+      "initial": "1",
+      "min": "0",
+      "sides": "6",
+      "tags": ["dice"]
+    },
+    {
+      "id": "coin",
+      "name": "Coin",
+      "initial": "1",
+      "min": "0",
+      "sides": "2",
+      "tags": ["dice"]
+    },
+    {
+      "id": "dollars",
+      "name": "Dollars",
+      "initial": "0",
+      "min": "0",
+      "tags": ["currency"]
+    }
+  ],
+
+  "computed": [
+    {
+      "id": "souls.production",
+      "tags": ["production", "soul-related"]
+    },
+    {
+      "id": "darkEssence.production",
+      "tags": ["production"]
+    }
+  ],
+
+  "modifiers": [
+    {
+      "id": "baseClickPower",
+      "name": "Base Click Power",
+      "target": "souls.production",
+      "stage": "base",
+      "value": "1",
+      "tags": ["click"]
+    },
+    {
+      "id": "harvesterProduction",
+      "name": "Harvester Production",
+      "target": "souls.production",
+      "stage": "flat",
+      "expression": "harvesters * 5",
+      "tags": ["building-bonus", "soul-related"]
+    },
+    {
+      "id": "ritualBonus",
+      "name": "Ritual Bonus",
+      "target": "souls.production",
+      "stage": "multiplicative",
+      "expression": "1 + (ritualAltars * 0.25)",
+      "tags": ["multiplier", "soul-related"]
+    },
+    {
+      "id": "darkEssenceBonus",
+      "name": "Dark Essence Bonus",
+      "targetTags": ["multiplier"],
+      "stage": "multiplicative",
+      "expression": "1 + (darkEssence * 0.1)",
+      "tags": ["meta-multiplier", "prestige-bonus"]
+    },
+    {
+      "id": "baseDarkEssenceGain",
+      "name": "Base Dark Essence Gain",
+      "target": "darkEssence.production",
+      "stage": "base",
+      "expression": "floor(souls / 1000000)",
+      "tags": ["prestige"]
+    }
+  ],
+
+  "events": [
+    {
+      "id": "soulHarvest",
+      "name": "Soul Harvest",
+      "type": "periodic",
+      "interval": 1000,
+      "action": {
+        "type": "produce",
+        "resource": "souls",
+        "amount": "souls.production"
+      }
+    },
+    {
+      "id": "darkRitual",
+      "name": "Dark Ritual",
+      "type": "periodic",
+      "interval": 30000,
+      "enabled": false,
+      "action": {
+        "type": "composite",
+        "actions": [
+          {
+            "type": "produce",
+            "resource": "darkEssence",
+            "amount": "1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "unlockRituals",
+      "name": "Unlock Rituals",
+      "type": "conditional",
+      "condition": "souls >= 1000 && harvesters >= 5",
+      "fireOnce": true,
+      "action": {
+        "type": "composite",
+        "actions": [
+          {
+            "type": "modify",
+            "modifier": "ritualBonus",
+            "operation": "enable"
+          },
+          {
+            "type": "custom",
+            "handler": "unlockFeature",
+            "params": { "feature": "rituals" }
+          }
+        ]
+      }
+    }
+  ],
+
+  "actions": [
+    {
+      "id": "buyHarvester",
+      "name": "Buy Harvester",
+      "type": "purchase",
+      "cost": {
+        "souls": "30"
+      },
+      "effects": [
+        {
+          "type": "addResource",
+          "target": "harvesters",
+          "value": "1"
+        }
+      ],
+      "tags": ["building", "basic"]
+    },
+    {
+      "id": "buyRitualAltar",
+      "name": "Buy Ritual Altar",
+      "type": "purchase",
+      "cost": {
+        "souls": "500"
+      },
+      "condition": "harvesters >= 5",
+      "effects": [
+        {
+          "type": "addResource",
+          "target": "ritualAltars",
+          "value": "1"
+        }
+      ],
+      "tags": ["building", "advanced"]
+    },
+    {
+      "id": "prestige",
+      "name": "Prestige",
+      "type": "prestige",
+      "cost": {},
+      "condition": "souls >= 1000000",
+      "effects": [
+        {
+          "type": "addResource",
+          "target": "darkEssence",
+          "value": "darkEssence.production"
+        },
+        {
+          "type": "setResource",
+          "target": "souls",
+          "value": "0"
+        },
+        {
+          "type": "setResource",
+          "target": "harvesters",
+          "value": "0"
+        },
+        {
+          "type": "setResource",
+          "target": "ritualAltars",
+          "value": "0"
+        }
+      ],
+      "tags": ["prestige", "reset"]
+    },
+    {
+      "id": "rollD6",
+      "name": "Roll D6",
+      "type": "activate",
+      "effects": [
+        {
+          "type": "rollDice",
+          "target": "d6",
+          "value": "dollars"
+        }
+      ],
+      "tags": ["dice"]
+    },
+    {
+      "id": "flipCoin",
+      "name": "Flip Coin",
+      "type": "activate",
+      "effects": [
+        {
+          "type": "rollDice",
+          "target": "coin",
+          "value": "dollars"
+        }
+      ],
+      "tags": ["dice"]
+    }
+  ],
+
+  "strategies": {
+    "balanced": {
+      "type": "composite",
+      "strategies": [
+        {
+          "type": "priority",
+          "priorities": ["buyRitualAltar", "buyHarvester"]
+        }
+      ]
+    },
+    "rushHarvesters": {
+      "type": "saveFor",
+      "target": "buyHarvester"
+    },
+    "prestigeRush": {
+      "type": "timed",
+      "phases": [
+        {
+          "until": 300000,
+          "strategy": {
+            "type": "greedy"
+          }
+        },
+        {
+          "until": 9999999999,
+          "strategy": {
+            "type": "saveFor",
+            "target": "prestige"
+          }
+        }
+      ]
+    }
+  },
+
+  "trees": [
+    {
+      "id": "harvesting",
+      "name": "Harvesting Talents",
+      "type": "talent",
+      "icon": "scythe",
+      "nodes": ["efficientHarvest", "rapidHarvest", "massHarvest", "harvesterMastery"],
+      "edges": ["efficientHarvest-rapidHarvest", "efficientHarvest-massHarvest", "rapidHarvest-harvesterMastery", "massHarvest-harvesterMastery"],
+      "layout": {
+        "type": "layered",
+        "direction": "top-down",
+        "rootNodes": ["efficientHarvest"]
+      }
+    },
+    {
+      "id": "rituals",
+      "name": "Ritual Talents",
+      "type": "talent",
+      "icon": "altar",
+      "nodes": ["darkPact", "soulBinding"],
+      "edges": ["darkPact-soulBinding"],
+      "layout": {
+        "type": "layered",
+        "direction": "top-down",
+        "rootNodes": ["darkPact"]
+      }
+    },
+    {
+      "id": "achievements",
+      "name": "Achievements",
+      "type": "achievement",
+      "icon": "trophy",
+      "nodes": ["firstSoul", "hundredSouls", "millionaire", "firstHarvester"],
+      "edges": ["firstSoul-hundredSouls", "hundredSouls-millionaire"],
+      "layout": {
+        "type": "layered",
+        "direction": "left-right",
+        "rootNodes": ["firstSoul", "firstHarvester"]
+      }
+    }
+  ],
+
+  "nodes": [
+    {
+      "id": "efficientHarvest",
+      "name": "Efficient Harvest",
+      "description": "+10% soul production per rank",
+      "tree": "harvesting",
+      "type": "purchased",
+      "maxRank": 5,
+      "cost": { "darkEssence": "1" },
+      "costScaling": "1 + (currentRank * 0.5)",
+      "requires": [],
+      "edgeIds": ["efficientHarvest-rapidHarvest", "efficientHarvest-massHarvest"],
+      "effects": [
+        { "type": "enableModifier", "target": "efficientHarvestBonus" }
+      ],
+      "tags": ["production", "basic"]
+    },
+    {
+      "id": "rapidHarvest",
+      "name": "Rapid Harvest",
+      "description": "Reduce harvest interval",
+      "tree": "harvesting",
+      "type": "purchased",
+      "maxRank": 3,
+      "cost": { "darkEssence": "2" },
+      "requires": ["efficientHarvest"],
+      "edgeIds": ["efficientHarvest-rapidHarvest", "rapidHarvest-harvesterMastery"],
+      "effects": [],
+      "tags": ["speed"]
+    },
+    {
+      "id": "massHarvest",
+      "name": "Mass Harvest",
+      "description": "+50% harvester efficiency",
+      "tree": "harvesting",
+      "type": "purchased",
+      "maxRank": 3,
+      "cost": { "darkEssence": "2" },
+      "requires": ["efficientHarvest"],
+      "edgeIds": ["efficientHarvest-massHarvest", "massHarvest-harvesterMastery"],
+      "effects": [],
+      "tags": ["harvester", "boost"]
+    },
+    {
+      "id": "harvesterMastery",
+      "name": "Harvester Mastery",
+      "description": "Ultimate harvesting power",
+      "tree": "harvesting",
+      "type": "purchased",
+      "maxRank": 1,
+      "cost": { "darkEssence": "10" },
+      "requires": ["rapidHarvest", "massHarvest"],
+      "edgeIds": ["rapidHarvest-harvesterMastery", "massHarvest-harvesterMastery"],
+      "effects": [
+        { "type": "enableModifier", "target": "harvesterMasteryBonus" }
+      ],
+      "tags": ["ultimate"]
+    },
+    {
+      "id": "darkPact",
+      "name": "Dark Pact",
+      "description": "Unlock dark essence production",
+      "tree": "rituals",
+      "type": "purchased",
+      "maxRank": 1,
+      "cost": { "darkEssence": "5" },
+      "requires": [],
+      "edgeIds": ["darkPact-soulBinding"],
+      "effects": [
+        { "type": "enableModifier", "target": "darkPactBonus" }
+      ],
+      "tags": ["prestige", "unlock"]
+    },
+    {
+      "id": "soulBinding",
+      "name": "Soul Binding",
+      "description": "Bind souls for greater power",
+      "tree": "rituals",
+      "type": "hybrid",
+      "maxRank": 1,
+      "cost": { "darkEssence": "10" },
+      "condition": "souls >= 100000",
+      "requires": ["darkPact"],
+      "edgeIds": ["darkPact-soulBinding"],
+      "effects": [
+        { "type": "enableModifier", "target": "soulBindingBonus" }
+      ],
+      "tags": ["prestige", "advanced"]
+    },
+    {
+      "id": "firstSoul",
+      "name": "First Soul",
+      "description": "Harvest your first soul",
+      "tree": "achievements",
+      "type": "automatic",
+      "maxRank": 1,
+      "requires": [],
+      "condition": "souls >= 1",
+      "edgeIds": ["firstSoul-hundredSouls"],
+      "effects": [
+        { "type": "addResource", "target": "darkEssence", "value": "1" }
+      ],
+      "tags": ["milestone"]
+    },
+    {
+      "id": "hundredSouls",
+      "name": "Soul Collector",
+      "description": "Collect 100 souls",
+      "tree": "achievements",
+      "type": "automatic",
+      "maxRank": 1,
+      "requires": ["firstSoul"],
+      "condition": "souls >= 100",
+      "edgeIds": ["firstSoul-hundredSouls", "hundredSouls-millionaire"],
+      "effects": [
+        { "type": "addResource", "target": "darkEssence", "value": "5" }
+      ],
+      "tags": ["milestone"]
+    },
+    {
+      "id": "millionaire",
+      "name": "Soul Millionaire",
+      "description": "Accumulate 1 million souls",
+      "tree": "achievements",
+      "type": "automatic",
+      "maxRank": 1,
+      "requires": ["hundredSouls"],
+      "condition": "souls >= 1000000",
+      "edgeIds": ["hundredSouls-millionaire"],
+      "effects": [
+        { "type": "addResource", "target": "darkEssence", "value": "50" },
+        { "type": "unlock", "target": "prestigeMode" }
+      ],
+      "tags": ["milestone", "prestige"]
+    },
+    {
+      "id": "firstHarvester",
+      "name": "First Harvester",
+      "description": "Build your first harvester",
+      "tree": "achievements",
+      "type": "automatic",
+      "maxRank": 1,
+      "requires": [],
+      "condition": "harvesters >= 1",
+      "edgeIds": [],
+      "effects": [
+        { "type": "addResource", "target": "darkEssence", "value": "2" }
+      ],
+      "tags": ["milestone", "building"]
+    }
+  ],
+
+  "edges": [
+    {
+      "id": "efficientHarvest-rapidHarvest",
+      "from": "efficientHarvest",
+      "to": "rapidHarvest",
+      "effects": [],
+      "visual": { "style": "solid", "color": "#ffd700" }
+    },
+    {
+      "id": "efficientHarvest-massHarvest",
+      "from": "efficientHarvest",
+      "to": "massHarvest",
+      "effects": [],
+      "visual": { "style": "solid", "color": "#ffd700" }
+    },
+    {
+      "id": "rapidHarvest-harvesterMastery",
+      "from": "rapidHarvest",
+      "to": "harvesterMastery",
+      "effects": [],
+      "visual": { "style": "dashed", "color": "#ff6600" }
+    },
+    {
+      "id": "massHarvest-harvesterMastery",
+      "from": "massHarvest",
+      "to": "harvesterMastery",
+      "effects": [
+        { "type": "enableModifier", "target": "synergyBonus" }
+      ],
+      "visual": { "style": "dashed", "color": "#ff6600" }
+    },
+    {
+      "id": "darkPact-soulBinding",
+      "from": "darkPact",
+      "to": "soulBinding",
+      "effects": [
+        { "type": "enableModifier", "target": "darkSynergyBonus" }
+      ],
+      "visual": { "style": "solid", "color": "#9900ff" }
+    },
+    {
+      "id": "firstSoul-hundredSouls",
+      "from": "firstSoul",
+      "to": "hundredSouls",
+      "effects": [],
+      "visual": { "style": "dotted", "color": "#00ff00" }
+    },
+    {
+      "id": "hundredSouls-millionaire",
+      "from": "hundredSouls",
+      "to": "millionaire",
+      "effects": [],
+      "visual": { "style": "dotted", "color": "#00ff00" }
+    }
+  ]
+}

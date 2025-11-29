@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Idleopolis</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #1a1c2c;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    #game-container {
+      border: 2px solid #3b5dc9;
+      border-radius: 4px;
+      position: relative;
+    }
+    /* Enable3D Three.js canvas - BEHIND, same position as Phaser */
+    #enable3d-three-canvas {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      z-index: 1 !important;
+    }
+    /* Phaser canvas on top (transparent) for 2D UI */
+    #game-container canvas:not(#enable3d-three-canvas) {
+      position: relative !important;
+      z-index: 2 !important;
+    }
+  </style>
+  <script type="module" crossorigin src="./assets/index-D85X2gCj.js"></script>
+</head>
+<body>
+  <div id="game-container"></div>
+</body>
+</html>
