@@ -1,0 +1,27 @@
+# Asset Generation Record
+
+**Generated:** 2025-12-04T15:23:10.680Z
+**Tool:** batch_generate_ui_elements
+**Output:** `/home/josh/idleopolis/game/ui/public/assets/generated/themes/spooky/buttons/button-icon-disabled.jpg`
+
+## Prompt
+
+```
+Circular stone medallion icon button DISABLED state - cracked stone, no glow, grayscale/faded. Gothic aesthetic. 96x96 pixel art. Clean edges for 32px corners.
+```
+
+## Full Prompt (sent to API)
+
+```
+Game UI button: Circular stone medallion icon button DISABLED state - cracked stone, no glow, grayscale/faded. Gothic aesthetic. 96x96 pixel art. Clean edges for 32px corners., pixel art style, retro game UI, clickable button, clear boundaries, hover state implied, transparent background, game asset, high quality UI element
+```
+
+## Parameters
+
+- **element_type:** `"button"`
+- **style:** `"pixel-art"`
+- **aspect_ratio:** `"1:1"`
+- **resolution:** `"1K"`
+- **subdirectory:** `"themes/spooky/buttons"`
+- **filename:** `"button-icon-disabled"`
+- **batch_index:** `7`

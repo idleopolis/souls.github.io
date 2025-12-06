@@ -1,0 +1,4150 @@
+{
+  "meta": {
+    "name": "Lucky Loop",
+    "version": "0.1.0",
+    "tickRate": 100
+  },
+  "nodes": [
+    {
+      "type": "state",
+      "id": "luck",
+      "name": "Luck",
+      "subType": "resource",
+      "initial": "0",
+      "min": "0",
+      "description": "Primary currency from rolling dice",
+      "icon": "clover",
+      "tags": [
+        "resource",
+        "currency",
+        "primary"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "prestigeLuck",
+      "name": "Prestige Luck",
+      "subType": "resource",
+      "initial": "0",
+      "min": "0",
+      "permanent": true,
+      "description": "Premium currency earned from prestige",
+      "icon": "golden-clover",
+      "tags": [
+        "resource",
+        "currency",
+        "prestige",
+        "permanent"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "momentum",
+      "name": "Momentum",
+      "subType": "resource",
+      "initial": "0",
+      "min": "0",
+      "max": "100",
+      "description": "Speed stacks from consecutive rolls",
+      "icon": "speedometer",
+      "tags": [
+        "resource",
+        "momentum",
+        "velocity"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talentPoints",
+      "name": "Talent Points",
+      "subType": "resource",
+      "initial": "100",
+      "min": "0",
+      "description": "Points available to spend on talents",
+      "icon": "poker-chip",
+      "tags": [
+        "resource",
+        "talents"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "inspirationTokens",
+      "name": "Inspiration",
+      "subType": "resource",
+      "initial": "0",
+      "min": "0",
+      "description": "Reroll tokens earned from achievements",
+      "icon": "lightbulb",
+      "tags": [
+        "resource",
+        "reroll"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "pathsChosen",
+      "name": "Paths Chosen",
+      "initial": "0",
+      "min": "0",
+      "max": "2",
+      "valueType": "integer",
+      "description": "Number of talent paths with points invested",
+      "tags": [
+        "paths",
+        "lock"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "fracturePath_hasPoints",
+      "name": "Fracture Path Active",
+      "initial": "0",
+      "valueType": "boolean",
+      "tags": [
+        "paths",
+        "fracture"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "velocityPath_hasPoints",
+      "name": "Velocity Path Active",
+      "initial": "0",
+      "valueType": "boolean",
+      "tags": [
+        "paths",
+        "velocity"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "augmentPath_hasPoints",
+      "name": "Augment Path Active",
+      "initial": "0",
+      "valueType": "boolean",
+      "tags": [
+        "paths",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "fracturePath_locked",
+      "name": "Fracture Path Locked",
+      "expression": "pathsChosen >= 2 && !fracturePath_hasPoints",
+      "tags": [
+        "paths",
+        "lock",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "velocityPath_locked",
+      "name": "Velocity Path Locked",
+      "expression": "pathsChosen >= 2 && !velocityPath_hasPoints",
+      "tags": [
+        "paths",
+        "lock",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "augmentPath_locked",
+      "name": "Augment Path Locked",
+      "expression": "pathsChosen >= 2 && !augmentPath_hasPoints",
+      "tags": [
+        "paths",
+        "lock",
+        "augment"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "primaryDie",
+      "name": "Primary Die",
+      "subType": "dice",
+      "initial": "1",
+      "min": "1",
+      "max": "6",
+      "dice": {
+        "sides": "6"
+      },
+      "tags": [
+        "dice",
+        "primary"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "diceCount",
+      "name": "Active Dice",
+      "initial": "1",
+      "min": "1",
+      "max": "10",
+      "valueType": "integer",
+      "description": "Number of dice currently rolling",
+      "tags": [
+        "dice",
+        "count"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "lastRollResult",
+      "name": "Last Roll",
+      "initial": "0",
+      "min": "0",
+      "description": "Result of the most recent roll",
+      "tags": [
+        "roll",
+        "result"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "totalRolls",
+      "name": "Total Rolls",
+      "initial": "0",
+      "min": "0",
+      "description": "Total number of dice rolls ever",
+      "tags": [
+        "stats",
+        "rolls"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "totalLuckEarned",
+      "name": "Total Luck Earned",
+      "initial": "0",
+      "min": "0",
+      "description": "Total luck earned from all rolls",
+      "tags": [
+        "stats",
+        "luck"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "baseLuckPerRoll",
+      "name": "Base Luck Per Roll",
+      "expression": "1",
+      "tags": [
+        "production",
+        "luck"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "luckProduction",
+      "name": "Luck Production",
+      "expression": "baseLuckPerRoll * lastRollResult",
+      "pipeline": [
+        {
+          "stage": "base",
+          "expression": "baseLuckPerRoll * lastRollResult"
+        }
+      ],
+      "tags": [
+        "production",
+        "luck"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "rollDice",
+      "name": "Roll Dice",
+      "when": {
+        "type": "player"
+      },
+      "mutations": [
+        {
+          "type": "roll",
+          "target": "primaryDie",
+          "value": "luck"
+        },
+        {
+          "type": "set",
+          "target": "lastRollResult",
+          "value": "primaryDie"
+        },
+        {
+          "type": "add",
+          "target": "totalRolls",
+          "value": "1"
+        },
+        {
+          "type": "add",
+          "target": "totalLuckEarned",
+          "value": "luckProduction"
+        }
+      ],
+      "tags": [
+        "roll",
+        "player"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "autoRollEnabled",
+      "name": "Auto-Roll Enabled",
+      "initial": "0",
+      "valueType": "boolean",
+      "tags": [
+        "system",
+        "autoroll"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "autoRollInterval",
+      "name": "Auto-Roll Interval",
+      "expression": "60000",
+      "pipeline": [
+        {
+          "stage": "base",
+          "expression": "60000"
+        }
+      ],
+      "description": "Milliseconds between auto-rolls (default 60 seconds)",
+      "tags": [
+        "system",
+        "autoroll",
+        "interval"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "autoRoll",
+      "name": "Auto Roll",
+      "when": {
+        "type": "interval",
+        "ms": "autoRollInterval"
+      },
+      "condition": "autoRollEnabled",
+      "mutations": [
+        {
+          "type": "fire",
+          "target": "rollDice"
+        }
+      ],
+      "tags": [
+        "system",
+        "autoroll"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "critChance",
+      "name": "Critical Roll Chance",
+      "expression": "0",
+      "pipeline": [
+        {
+          "stage": "base",
+          "expression": "0"
+        }
+      ],
+      "description": "Chance (0-1) for a critical roll multiplier",
+      "tags": [
+        "system",
+        "crit"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "critMultiplier",
+      "name": "Critical Multiplier",
+      "expression": "3",
+      "pipeline": [
+        {
+          "stage": "base",
+          "expression": "3"
+        }
+      ],
+      "description": "Multiplier applied on critical rolls",
+      "tags": [
+        "system",
+        "crit"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "tree_fracture",
+      "name": "Fracture",
+      "subType": "tree",
+      "initial": "1",
+      "valueType": "boolean",
+      "description": "Your die shatters into many, each a fragment of the original's power",
+      "icon": "shatter",
+      "currency": "talentPoints",
+      "treeType": "talent",
+      "pathColor": "0x9966ff",
+      "layout": {
+        "type": "layered",
+        "direction": "top-down",
+        "spacing": {
+          "x": 80,
+          "y": 100
+        }
+      },
+      "group": "trees",
+      "tags": [
+        "tree",
+        "fracture"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_hairlineCrack",
+      "name": "Hairline Crack",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.fracture",
+      "description": "+2% chance per rank to count roll twice",
+      "tier": 1,
+      "path": "fracture",
+      "adjacent": [
+        "talent_twinDice"
+      ],
+      "tags": [
+        "talent",
+        "fracture",
+        "tier1"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_stressTest",
+      "name": "Stress Test",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.fracture",
+      "description": "+5% roll value per rank, +1% break chance",
+      "tier": 1,
+      "path": "fracture",
+      "adjacent": [
+        "talent_cascade"
+      ],
+      "tags": [
+        "talent",
+        "fracture",
+        "tier1"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_shardAffinity",
+      "name": "Shard Affinity",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.fracture",
+      "description": "Shards last +0.5s per rank",
+      "tier": 1,
+      "path": "fracture",
+      "adjacent": [
+        "talent_resonance"
+      ],
+      "tags": [
+        "talent",
+        "fracture",
+        "tier1"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_instability",
+      "name": "Instability",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.fracture",
+      "description": "+1 temp die per rank when die breaks",
+      "tier": 1,
+      "path": "fracture",
+      "adjacent": [
+        "talent_shardCollector"
+      ],
+      "tags": [
+        "talent",
+        "fracture",
+        "tier1"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_fractureMemory",
+      "name": "Fracture Memory",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.fracture",
+      "description": "+3% permanent bonus per rank per break this run",
+      "tier": 1,
+      "path": "fracture",
+      "adjacent": [
+        "talent_sympatheticVibration"
+      ],
+      "tags": [
+        "talent",
+        "fracture",
+        "tier1"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_twinDice",
+      "name": "Twin Dice",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "1",
+      "maxRank": 1,
+      "valueType": "integer",
+      "group": "talents.fracture",
+      "description": "Permanently have 2 dice (60% size each)",
+      "tier": 2,
+      "path": "fracture",
+      "adjacent": [
+        "talent_hairlineCrack",
+        "talent_diceStorm"
+      ],
+      "tags": [
+        "talent",
+        "fracture",
+        "tier2"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_cascade",
+      "name": "Cascade",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.fracture",
+      "description": "Rolling doubles triggers +1 free roll per rank",
+      "tier": 2,
+      "path": "fracture",
+      "adjacent": [
+        "talent_stressTest",
+        "talent_synchronizedRoll"
+      ],
+      "tags": [
+        "talent",
+        "fracture",
+        "tier2"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_resonance",
+      "name": "Resonance",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.fracture",
+      "description": "Same-value dice multiply together (+10% bonus per rank)",
+      "tier": 2,
+      "path": "fracture",
+      "adjacent": [
+        "talent_shardAffinity",
+        "talent_perfectSplit"
+      ],
+      "tags": [
+        "talent",
+        "fracture",
+        "tier2"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_shardCollector",
+      "name": "Shard Collector",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.fracture",
+      "description": "Broken pieces auto-roll, generating +20% value per rank",
+      "tier": 2,
+      "path": "fracture",
+      "adjacent": [
+        "talent_instability",
+        "talent_echoRoll"
+      ],
+      "tags": [
+        "talent",
+        "fracture",
+        "tier2"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_sympatheticVibration",
+      "name": "Sympathetic Vibration",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.fracture",
+      "description": "When one die crits, +5% crit chance per rank for others",
+      "tier": 2,
+      "path": "fracture",
+      "adjacent": [
+        "talent_fractureMemory",
+        "talent_swarmIntelligence"
+      ],
+      "tags": [
+        "talent",
+        "fracture",
+        "tier2"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "fractureTier1Points",
+      "name": "Fracture Tier 1 Points",
+      "expression": "talent_hairlineCrack + talent_stressTest + talent_shardAffinity + talent_instability + talent_fractureMemory",
+      "tags": [
+        "tier",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "fractureTier2Points",
+      "name": "Fracture Tier 2 Points",
+      "expression": "talent_twinDice + talent_cascade + talent_resonance + talent_shardCollector + talent_sympatheticVibration",
+      "tags": [
+        "tier",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "fractureTier2Unlocked",
+      "name": "Fracture Tier 2 Unlocked",
+      "expression": "fractureTier1Points >= 5 && !fracturePath_locked",
+      "tags": [
+        "tier",
+        "fracture",
+        "unlock"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_hairlineCrack",
+      "expression": "1 * (1 + talent_hairlineCrack * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_stressTest",
+      "expression": "1 * (1 + talent_stressTest * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_shardAffinity",
+      "expression": "1 * (1 + talent_shardAffinity * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_instability",
+      "expression": "1 * (1 + talent_instability * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_fractureMemory",
+      "expression": "1 * (1 + talent_fractureMemory * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_twinDice",
+      "expression": "5",
+      "tags": [
+        "cost",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_cascade",
+      "expression": "2 * (1 + talent_cascade * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_resonance",
+      "expression": "2 * (1 + talent_resonance * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_shardCollector",
+      "expression": "2 * (1 + talent_shardCollector * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_sympatheticVibration",
+      "expression": "2 * (1 + talent_sympatheticVibration * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_hairlineCrack",
+      "expression": "!fracturePath_locked && talent_hairlineCrack < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_stressTest",
+      "expression": "!fracturePath_locked && talent_stressTest < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_shardAffinity",
+      "expression": "!fracturePath_locked && talent_shardAffinity < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_instability",
+      "expression": "!fracturePath_locked && talent_instability < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_fractureMemory",
+      "expression": "!fracturePath_locked && talent_fractureMemory < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_twinDice",
+      "expression": "fractureTier2Unlocked && talent_twinDice < 1",
+      "tags": [
+        "availability",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_cascade",
+      "expression": "fractureTier2Unlocked && talent_cascade < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_resonance",
+      "expression": "fractureTier2Unlocked && talent_resonance < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_shardCollector",
+      "expression": "fractureTier2Unlocked && talent_shardCollector < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_sympatheticVibration",
+      "expression": "fractureTier2Unlocked && talent_sympatheticVibration < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_hairlineCrack",
+      "name": "Purchase Hairline Crack",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_hairlineCrack"
+      },
+      "condition": "canPurchase_hairlineCrack",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_hairlineCrack",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "fracturePath_hasPoints",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "pathsChosen",
+          "value": "fracturePath_hasPoints + velocityPath_hasPoints + augmentPath_hasPoints"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "fracture"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_stressTest",
+      "name": "Purchase Stress Test",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_stressTest"
+      },
+      "condition": "canPurchase_stressTest",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_stressTest",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "fracturePath_hasPoints",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "pathsChosen",
+          "value": "fracturePath_hasPoints + velocityPath_hasPoints + augmentPath_hasPoints"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "fracture"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_shardAffinity",
+      "name": "Purchase Shard Affinity",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_shardAffinity"
+      },
+      "condition": "canPurchase_shardAffinity",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_shardAffinity",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "fracturePath_hasPoints",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "pathsChosen",
+          "value": "fracturePath_hasPoints + velocityPath_hasPoints + augmentPath_hasPoints"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "fracture"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_instability",
+      "name": "Purchase Instability",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_instability"
+      },
+      "condition": "canPurchase_instability",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_instability",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "fracturePath_hasPoints",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "pathsChosen",
+          "value": "fracturePath_hasPoints + velocityPath_hasPoints + augmentPath_hasPoints"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "fracture"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_fractureMemory",
+      "name": "Purchase Fracture Memory",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_fractureMemory"
+      },
+      "condition": "canPurchase_fractureMemory",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_fractureMemory",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "fracturePath_hasPoints",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "pathsChosen",
+          "value": "fracturePath_hasPoints + velocityPath_hasPoints + augmentPath_hasPoints"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "fracture"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_twinDice",
+      "name": "Purchase Twin Dice",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_twinDice"
+      },
+      "condition": "canPurchase_twinDice",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_twinDice",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "diceCount",
+          "value": "2"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "fracture"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_cascade",
+      "name": "Purchase Cascade",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_cascade"
+      },
+      "condition": "canPurchase_cascade",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_cascade",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "fracture"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_resonance",
+      "name": "Purchase Resonance",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_resonance"
+      },
+      "condition": "canPurchase_resonance",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_resonance",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "fracture"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_shardCollector",
+      "name": "Purchase Shard Collector",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_shardCollector"
+      },
+      "condition": "canPurchase_shardCollector",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_shardCollector",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "fracture"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_sympatheticVibration",
+      "name": "Purchase Sympathetic Vibration",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_sympatheticVibration"
+      },
+      "condition": "canPurchase_sympatheticVibration",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_sympatheticVibration",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "mod_stressTest_luck",
+      "name": "Stress Test Luck Bonus",
+      "subType": "modifier",
+      "target": "luckProduction",
+      "stage": "multiplicative",
+      "expression": "1 + (talent_stressTest * 0.05)",
+      "condition": "talent_stressTest > 0",
+      "priority": 10,
+      "tags": [
+        "modifier",
+        "talent",
+        "fracture",
+        "luck"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_diceStorm",
+      "name": "Dice Storm",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "3",
+      "maxRank": 3,
+      "valueType": "integer",
+      "group": "talents.fracture",
+      "description": "+1 maximum dice per rank (up to 5 total)",
+      "tier": 3,
+      "path": "fracture",
+      "adjacent": [
+        "talent_twinDice",
+        "talent_singularityCollapse"
+      ],
+      "tags": [
+        "talent",
+        "fracture",
+        "tier3"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_synchronizedRoll",
+      "name": "Synchronized Roll",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.fracture",
+      "description": "All dice roll simultaneously, +5% combined value per rank",
+      "tier": 3,
+      "path": "fracture",
+      "adjacent": [
+        "talent_cascade",
+        "talent_singularityCollapse"
+      ],
+      "tags": [
+        "talent",
+        "fracture",
+        "tier3"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_perfectSplit",
+      "name": "Perfect Split",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "3",
+      "maxRank": 3,
+      "valueType": "integer",
+      "group": "talents.fracture",
+      "description": "Each die retains more face upgrades from original (+20% per rank)",
+      "tier": 3,
+      "path": "fracture",
+      "adjacent": [
+        "talent_resonance",
+        "talent_singularityCollapse"
+      ],
+      "tags": [
+        "talent",
+        "fracture",
+        "tier3"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_echoRoll",
+      "name": "Echo Roll",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.fracture",
+      "description": "+5% chance per rank for shards to echo their last roll",
+      "tier": 3,
+      "path": "fracture",
+      "adjacent": [
+        "talent_shardCollector",
+        "talent_singularityCollapse"
+      ],
+      "tags": [
+        "talent",
+        "fracture",
+        "tier3"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_swarmIntelligence",
+      "name": "Swarm Intelligence",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.fracture",
+      "description": "+2% bonus per rank for each active die",
+      "tier": 3,
+      "path": "fracture",
+      "adjacent": [
+        "talent_sympatheticVibration",
+        "talent_singularityCollapse"
+      ],
+      "tags": [
+        "talent",
+        "fracture",
+        "tier3"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_singularityCollapse",
+      "name": "Singularity Collapse",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "1",
+      "maxRank": 1,
+      "valueType": "integer",
+      "group": "talents.fracture",
+      "description": "Once per prestige, combine ALL dice into one mega-roll",
+      "tier": 4,
+      "path": "fracture",
+      "adjacent": [
+        "talent_diceStorm",
+        "talent_synchronizedRoll",
+        "talent_perfectSplit",
+        "talent_echoRoll",
+        "talent_swarmIntelligence"
+      ],
+      "tags": [
+        "talent",
+        "fracture",
+        "tier4",
+        "capstone"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "fractureTier3Points",
+      "name": "Fracture Tier 3 Points",
+      "expression": "talent_diceStorm + talent_synchronizedRoll + talent_perfectSplit + talent_echoRoll + talent_swarmIntelligence",
+      "tags": [
+        "tier",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "fractureTier3Unlocked",
+      "name": "Fracture Tier 3 Unlocked",
+      "expression": "fractureTier2Points >= 10 && !fracturePath_locked",
+      "tags": [
+        "tier",
+        "fracture",
+        "unlock"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "fractureTier4Unlocked",
+      "name": "Fracture Tier 4 Unlocked",
+      "expression": "fractureTier3Points >= 8 && !fracturePath_locked",
+      "tags": [
+        "tier",
+        "fracture",
+        "unlock"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_diceStorm",
+      "expression": "5 * (1 + talent_diceStorm * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_synchronizedRoll",
+      "expression": "4 * (1 + talent_synchronizedRoll * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_perfectSplit",
+      "expression": "5 * (1 + talent_perfectSplit * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_echoRoll",
+      "expression": "4 * (1 + talent_echoRoll * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_swarmIntelligence",
+      "expression": "4 * (1 + talent_swarmIntelligence * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_singularityCollapse",
+      "expression": "15",
+      "tags": [
+        "cost",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_diceStorm",
+      "expression": "fractureTier3Unlocked && talent_diceStorm < 3",
+      "tags": [
+        "availability",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_synchronizedRoll",
+      "expression": "fractureTier3Unlocked && talent_synchronizedRoll < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_perfectSplit",
+      "expression": "fractureTier3Unlocked && talent_perfectSplit < 3",
+      "tags": [
+        "availability",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_echoRoll",
+      "expression": "fractureTier3Unlocked && talent_echoRoll < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_swarmIntelligence",
+      "expression": "fractureTier3Unlocked && talent_swarmIntelligence < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_singularityCollapse",
+      "expression": "fractureTier4Unlocked && talent_singularityCollapse < 1",
+      "tags": [
+        "availability",
+        "talent",
+        "fracture"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_diceStorm",
+      "name": "Purchase Dice Storm",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_diceStorm"
+      },
+      "condition": "canPurchase_diceStorm",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_diceStorm",
+          "value": "1"
+        },
+        {
+          "type": "add",
+          "target": "diceCount",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "fracture"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_synchronizedRoll",
+      "name": "Purchase Synchronized Roll",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_synchronizedRoll"
+      },
+      "condition": "canPurchase_synchronizedRoll",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_synchronizedRoll",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "fracture"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_perfectSplit",
+      "name": "Purchase Perfect Split",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_perfectSplit"
+      },
+      "condition": "canPurchase_perfectSplit",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_perfectSplit",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "fracture"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_echoRoll",
+      "name": "Purchase Echo Roll",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_echoRoll"
+      },
+      "condition": "canPurchase_echoRoll",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_echoRoll",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "fracture"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_swarmIntelligence",
+      "name": "Purchase Swarm Intelligence",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_swarmIntelligence"
+      },
+      "condition": "canPurchase_swarmIntelligence",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_swarmIntelligence",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "fracture"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_singularityCollapse",
+      "name": "Purchase Singularity Collapse",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_singularityCollapse"
+      },
+      "condition": "canPurchase_singularityCollapse",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_singularityCollapse",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "fracture"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "mod_synchronizedRoll_luck",
+      "name": "Synchronized Roll Luck Bonus",
+      "subType": "modifier",
+      "target": "luckProduction",
+      "stage": "multiplicative",
+      "expression": "1 + (talent_synchronizedRoll * 0.05)",
+      "condition": "talent_synchronizedRoll > 0",
+      "priority": 20,
+      "tags": [
+        "modifier",
+        "talent",
+        "fracture",
+        "luck"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "mod_swarmIntelligence_luck",
+      "name": "Swarm Intelligence Luck Bonus",
+      "subType": "modifier",
+      "target": "luckProduction",
+      "stage": "multiplicative",
+      "expression": "1 + (talent_swarmIntelligence * 0.02 * diceCount)",
+      "condition": "talent_swarmIntelligence > 0",
+      "priority": 30,
+      "tags": [
+        "modifier",
+        "talent",
+        "fracture",
+        "luck"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "tree_velocity",
+      "name": "Velocity",
+      "subType": "tree",
+      "initial": "1",
+      "valueType": "boolean",
+      "description": "Time bends to your will - roll faster, chain reactions, enter fever mode",
+      "icon": "speedometer",
+      "currency": "talentPoints",
+      "treeType": "talent",
+      "pathColor": "0x00ccff",
+      "layout": {
+        "type": "layered",
+        "direction": "top-down",
+        "spacing": {
+          "x": 80,
+          "y": 100
+        }
+      },
+      "group": "trees",
+      "tags": [
+        "tree",
+        "velocity"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_quickFlick",
+      "name": "Quick Flick",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.velocity",
+      "description": "+10% roll animation speed per rank",
+      "tier": 1,
+      "path": "velocity",
+      "adjacent": [
+        "talent_blur"
+      ],
+      "tags": [
+        "talent",
+        "velocity",
+        "tier1"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_momentum",
+      "name": "Momentum",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.velocity",
+      "description": "+2 max momentum per rank, faster stack gain",
+      "tier": 1,
+      "path": "velocity",
+      "adjacent": [
+        "talent_chainReaction"
+      ],
+      "tags": [
+        "talent",
+        "velocity",
+        "tier1"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_autoRoll1",
+      "name": "Auto-Roll I",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "1",
+      "maxRank": 1,
+      "valueType": "integer",
+      "group": "talents.velocity",
+      "description": "Die auto-rolls every 30 seconds",
+      "tier": 1,
+      "path": "velocity",
+      "adjacent": [
+        "talent_perpetualMotion"
+      ],
+      "tags": [
+        "talent",
+        "velocity",
+        "tier1"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_rollEcho",
+      "name": "Roll Echo",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.velocity",
+      "description": "+3% chance per rank for previous roll to count again",
+      "tier": 1,
+      "path": "velocity",
+      "adjacent": [
+        "talent_hotStreak"
+      ],
+      "tags": [
+        "talent",
+        "velocity",
+        "tier1"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_anticipation",
+      "name": "Anticipation",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.velocity",
+      "description": "+5% luck per rank when waiting between rolls",
+      "tier": 1,
+      "path": "velocity",
+      "adjacent": [
+        "talent_ricochet"
+      ],
+      "tags": [
+        "talent",
+        "velocity",
+        "tier1"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_blur",
+      "name": "Blur",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.velocity",
+      "description": "+10% roll speed per rank, adds motion blur effect",
+      "tier": 2,
+      "path": "velocity",
+      "adjacent": [
+        "talent_quickFlick",
+        "talent_timeDilation"
+      ],
+      "tags": [
+        "talent",
+        "velocity",
+        "tier2"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_chainReaction",
+      "name": "Chain Reaction",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.velocity",
+      "description": "+3% chance per rank to trigger free re-roll",
+      "tier": 2,
+      "path": "velocity",
+      "adjacent": [
+        "talent_momentum",
+        "talent_autoRoll3"
+      ],
+      "tags": [
+        "talent",
+        "velocity",
+        "tier2"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_perpetualMotion",
+      "name": "Perpetual Motion",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.velocity",
+      "description": "-4 seconds auto-roll interval per rank",
+      "tier": 2,
+      "path": "velocity",
+      "adjacent": [
+        "talent_autoRoll1",
+        "talent_temporalLoop"
+      ],
+      "tags": [
+        "talent",
+        "velocity",
+        "tier2"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_hotStreak",
+      "name": "Hot Streak",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.velocity",
+      "description": "+5% value per rank after 3+ consecutive good rolls",
+      "tier": 2,
+      "path": "velocity",
+      "adjacent": [
+        "talent_rollEcho",
+        "talent_feverMode"
+      ],
+      "tags": [
+        "talent",
+        "velocity",
+        "tier2"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_ricochet",
+      "name": "Ricochet",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.velocity",
+      "description": "+4% chance per rank for die to bounce and re-roll",
+      "tier": 2,
+      "path": "velocity",
+      "adjacent": [
+        "talent_anticipation",
+        "talent_lightspeed"
+      ],
+      "tags": [
+        "talent",
+        "velocity",
+        "tier2"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_timeDilation",
+      "name": "Time Dilation",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.velocity",
+      "description": "Roll animation approaches instant (0.2s at max)",
+      "tier": 3,
+      "path": "velocity",
+      "adjacent": [
+        "talent_blur",
+        "talent_temporalLoop"
+      ],
+      "tags": [
+        "talent",
+        "velocity",
+        "tier3"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_autoRoll3",
+      "name": "Auto-Roll III",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "3",
+      "maxRank": 3,
+      "valueType": "integer",
+      "group": "talents.velocity",
+      "description": "Auto-rolls every 2 seconds at max rank",
+      "tier": 3,
+      "path": "velocity",
+      "adjacent": [
+        "talent_chainReaction",
+        "talent_temporalLoop"
+      ],
+      "tags": [
+        "talent",
+        "velocity",
+        "tier3"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_feverMode",
+      "name": "Fever Mode",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "3",
+      "maxRank": 3,
+      "valueType": "integer",
+      "group": "talents.velocity",
+      "description": "At max momentum, enter fever mode (+50% value per rank)",
+      "tier": 3,
+      "path": "velocity",
+      "adjacent": [
+        "talent_hotStreak",
+        "talent_temporalLoop"
+      ],
+      "tags": [
+        "talent",
+        "velocity",
+        "tier3"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_lightspeed",
+      "name": "Lightspeed",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "3",
+      "maxRank": 3,
+      "valueType": "integer",
+      "group": "talents.velocity",
+      "description": "Ricochet rolls happen instantly (+10% extra value each)",
+      "tier": 3,
+      "path": "velocity",
+      "adjacent": [
+        "talent_ricochet",
+        "talent_temporalLoop"
+      ],
+      "tags": [
+        "talent",
+        "velocity",
+        "tier3"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_temporalLoop",
+      "name": "Temporal Loop",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "1",
+      "maxRank": 1,
+      "valueType": "integer",
+      "group": "talents.velocity",
+      "description": "Once per minute, replay the last 10 seconds of rolls",
+      "tier": 4,
+      "path": "velocity",
+      "adjacent": [
+        "talent_timeDilation",
+        "talent_autoRoll3",
+        "talent_feverMode",
+        "talent_lightspeed"
+      ],
+      "tags": [
+        "talent",
+        "velocity",
+        "tier4",
+        "capstone"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "velocityTier1Points",
+      "name": "Velocity Tier 1 Points",
+      "expression": "talent_quickFlick + talent_momentum + talent_autoRoll1 + talent_rollEcho + talent_anticipation",
+      "tags": [
+        "tier",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "velocityTier2Points",
+      "name": "Velocity Tier 2 Points",
+      "expression": "talent_blur + talent_chainReaction + talent_perpetualMotion + talent_hotStreak + talent_ricochet",
+      "tags": [
+        "tier",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "velocityTier3Points",
+      "name": "Velocity Tier 3 Points",
+      "expression": "talent_timeDilation + talent_autoRoll3 + talent_feverMode + talent_lightspeed",
+      "tags": [
+        "tier",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "velocityTier2Unlocked",
+      "name": "Velocity Tier 2 Unlocked",
+      "expression": "velocityTier1Points >= 5 && !velocityPath_locked",
+      "tags": [
+        "tier",
+        "velocity",
+        "unlock"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "velocityTier3Unlocked",
+      "name": "Velocity Tier 3 Unlocked",
+      "expression": "velocityTier2Points >= 10 && !velocityPath_locked",
+      "tags": [
+        "tier",
+        "velocity",
+        "unlock"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "velocityTier4Unlocked",
+      "name": "Velocity Tier 4 Unlocked",
+      "expression": "velocityTier3Points >= 8 && !velocityPath_locked",
+      "tags": [
+        "tier",
+        "velocity",
+        "unlock"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_quickFlick",
+      "expression": "1 * (1 + talent_quickFlick * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_momentum",
+      "expression": "1 * (1 + talent_momentum * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_autoRoll1",
+      "expression": "3",
+      "tags": [
+        "cost",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_rollEcho",
+      "expression": "1 * (1 + talent_rollEcho * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_anticipation",
+      "expression": "1 * (1 + talent_anticipation * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_blur",
+      "expression": "2 * (1 + talent_blur * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_chainReaction",
+      "expression": "2 * (1 + talent_chainReaction * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_perpetualMotion",
+      "expression": "2 * (1 + talent_perpetualMotion * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_hotStreak",
+      "expression": "2 * (1 + talent_hotStreak * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_ricochet",
+      "expression": "2 * (1 + talent_ricochet * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_timeDilation",
+      "expression": "4 * (1 + talent_timeDilation * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_autoRoll3",
+      "expression": "5 * (1 + talent_autoRoll3 * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_feverMode",
+      "expression": "5 * (1 + talent_feverMode * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_lightspeed",
+      "expression": "5 * (1 + talent_lightspeed * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_temporalLoop",
+      "expression": "15",
+      "tags": [
+        "cost",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_quickFlick",
+      "expression": "!velocityPath_locked && talent_quickFlick < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_momentum",
+      "expression": "!velocityPath_locked && talent_momentum < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_autoRoll1",
+      "expression": "!velocityPath_locked && talent_autoRoll1 < 1",
+      "tags": [
+        "availability",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_rollEcho",
+      "expression": "!velocityPath_locked && talent_rollEcho < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_anticipation",
+      "expression": "!velocityPath_locked && talent_anticipation < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_blur",
+      "expression": "velocityTier2Unlocked && talent_blur < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_chainReaction",
+      "expression": "velocityTier2Unlocked && talent_chainReaction < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_perpetualMotion",
+      "expression": "velocityTier2Unlocked && talent_perpetualMotion < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_hotStreak",
+      "expression": "velocityTier2Unlocked && talent_hotStreak < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_ricochet",
+      "expression": "velocityTier2Unlocked && talent_ricochet < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_timeDilation",
+      "expression": "velocityTier3Unlocked && talent_timeDilation < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_autoRoll3",
+      "expression": "velocityTier3Unlocked && talent_autoRoll3 < 3",
+      "tags": [
+        "availability",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_feverMode",
+      "expression": "velocityTier3Unlocked && talent_feverMode < 3",
+      "tags": [
+        "availability",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_lightspeed",
+      "expression": "velocityTier3Unlocked && talent_lightspeed < 3",
+      "tags": [
+        "availability",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_temporalLoop",
+      "expression": "velocityTier4Unlocked && talent_temporalLoop < 1",
+      "tags": [
+        "availability",
+        "talent",
+        "velocity"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_quickFlick",
+      "name": "Purchase Quick Flick",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_quickFlick"
+      },
+      "condition": "canPurchase_quickFlick",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_quickFlick",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "velocityPath_hasPoints",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "pathsChosen",
+          "value": "fracturePath_hasPoints + velocityPath_hasPoints + augmentPath_hasPoints"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "velocity"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_momentum",
+      "name": "Purchase Momentum",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_momentum"
+      },
+      "condition": "canPurchase_momentum",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_momentum",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "velocityPath_hasPoints",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "pathsChosen",
+          "value": "fracturePath_hasPoints + velocityPath_hasPoints + augmentPath_hasPoints"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "velocity"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_autoRoll1",
+      "name": "Purchase Auto-Roll I",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_autoRoll1"
+      },
+      "condition": "canPurchase_autoRoll1",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_autoRoll1",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "autoRollEnabled",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "velocityPath_hasPoints",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "pathsChosen",
+          "value": "fracturePath_hasPoints + velocityPath_hasPoints + augmentPath_hasPoints"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "velocity"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_rollEcho",
+      "name": "Purchase Roll Echo",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_rollEcho"
+      },
+      "condition": "canPurchase_rollEcho",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_rollEcho",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "velocityPath_hasPoints",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "pathsChosen",
+          "value": "fracturePath_hasPoints + velocityPath_hasPoints + augmentPath_hasPoints"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "velocity"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_anticipation",
+      "name": "Purchase Anticipation",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_anticipation"
+      },
+      "condition": "canPurchase_anticipation",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_anticipation",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "velocityPath_hasPoints",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "pathsChosen",
+          "value": "fracturePath_hasPoints + velocityPath_hasPoints + augmentPath_hasPoints"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "velocity"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_blur",
+      "name": "Purchase Blur",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_blur"
+      },
+      "condition": "canPurchase_blur",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_blur",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "velocity"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_chainReaction",
+      "name": "Purchase Chain Reaction",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_chainReaction"
+      },
+      "condition": "canPurchase_chainReaction",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_chainReaction",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "velocity"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_perpetualMotion",
+      "name": "Purchase Perpetual Motion",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_perpetualMotion"
+      },
+      "condition": "canPurchase_perpetualMotion",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_perpetualMotion",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "velocity"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_hotStreak",
+      "name": "Purchase Hot Streak",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_hotStreak"
+      },
+      "condition": "canPurchase_hotStreak",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_hotStreak",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "velocity"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_ricochet",
+      "name": "Purchase Ricochet",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_ricochet"
+      },
+      "condition": "canPurchase_ricochet",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_ricochet",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "velocity"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_timeDilation",
+      "name": "Purchase Time Dilation",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_timeDilation"
+      },
+      "condition": "canPurchase_timeDilation",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_timeDilation",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "velocity"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_autoRoll3",
+      "name": "Purchase Auto-Roll III",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_autoRoll3"
+      },
+      "condition": "canPurchase_autoRoll3",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_autoRoll3",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "velocity"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_feverMode",
+      "name": "Purchase Fever Mode",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_feverMode"
+      },
+      "condition": "canPurchase_feverMode",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_feverMode",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "velocity"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_lightspeed",
+      "name": "Purchase Lightspeed",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_lightspeed"
+      },
+      "condition": "canPurchase_lightspeed",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_lightspeed",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "velocity"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_temporalLoop",
+      "name": "Purchase Temporal Loop",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_temporalLoop"
+      },
+      "condition": "canPurchase_temporalLoop",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_temporalLoop",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "velocity"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "mod_quickFlick_animSpeed",
+      "name": "Quick Flick Animation Speed",
+      "subType": "modifier",
+      "target": "rollAnimationSpeed",
+      "stage": "multiplicative",
+      "expression": "1 + (talent_quickFlick * 0.1)",
+      "condition": "talent_quickFlick > 0",
+      "priority": 10,
+      "tags": [
+        "modifier",
+        "talent",
+        "velocity",
+        "animation"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "mod_blur_animSpeed",
+      "name": "Blur Animation Speed",
+      "subType": "modifier",
+      "target": "rollAnimationSpeed",
+      "stage": "multiplicative",
+      "expression": "1 + (talent_blur * 0.1)",
+      "condition": "talent_blur > 0",
+      "priority": 20,
+      "tags": [
+        "modifier",
+        "talent",
+        "velocity",
+        "animation"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "mod_perpetualMotion_autoRoll",
+      "name": "Perpetual Motion Auto-Roll Reduction",
+      "subType": "modifier",
+      "target": "autoRollInterval",
+      "stage": "flat",
+      "expression": "-(talent_perpetualMotion * 4000)",
+      "condition": "talent_perpetualMotion > 0",
+      "priority": 10,
+      "tags": [
+        "modifier",
+        "talent",
+        "velocity",
+        "autoroll"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "mod_momentum_maxMomentum",
+      "name": "Momentum Max Increase",
+      "subType": "modifier",
+      "target": "maxMomentum",
+      "stage": "flat",
+      "expression": "talent_momentum * 2",
+      "condition": "talent_momentum > 0",
+      "priority": 10,
+      "tags": [
+        "modifier",
+        "talent",
+        "velocity",
+        "momentum"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "tree_augment",
+      "name": "Augment",
+      "subType": "tree",
+      "initial": "1",
+      "valueType": "boolean",
+      "description": "Raw power flows through your dice - bigger numbers, critical strikes, face manipulation",
+      "icon": "star-power",
+      "currency": "talentPoints",
+      "treeType": "talent",
+      "pathColor": "0xffcc00",
+      "layout": {
+        "type": "layered",
+        "direction": "top-down",
+        "spacing": {
+          "x": 80,
+          "y": 100
+        }
+      },
+      "group": "trees",
+      "tags": [
+        "tree",
+        "augment"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_weightedDice",
+      "name": "Weighted Dice",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.augment",
+      "description": "+1 to all face values per rank",
+      "tier": 1,
+      "path": "augment",
+      "adjacent": [
+        "talent_faceEnhancement"
+      ],
+      "tags": [
+        "talent",
+        "augment",
+        "tier1"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_luckyCharm",
+      "name": "Lucky Charm",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.augment",
+      "description": "6s count as +1 higher per rank (6 → 7, 8, etc.)",
+      "tier": 1,
+      "path": "augment",
+      "adjacent": [
+        "talent_criticalRoll"
+      ],
+      "tags": [
+        "talent",
+        "augment",
+        "tier1"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_denseCore",
+      "name": "Dense Core",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.augment",
+      "description": "+5% roll value per rank, -2% animation speed",
+      "tier": 1,
+      "path": "augment",
+      "adjacent": [
+        "talent_loadedDice"
+      ],
+      "tags": [
+        "talent",
+        "augment",
+        "tier1"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_fortunesFavor",
+      "name": "Fortune's Favor",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.augment",
+      "description": "+2% luck multiplier per rank",
+      "tier": 1,
+      "path": "augment",
+      "adjacent": [
+        "talent_pipInflation"
+      ],
+      "tags": [
+        "talent",
+        "augment",
+        "tier1"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_innerStrength",
+      "name": "Inner Strength",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.augment",
+      "description": "+10% base luck production per rank",
+      "tier": 1,
+      "path": "augment",
+      "adjacent": [
+        "talent_gravityWell"
+      ],
+      "tags": [
+        "talent",
+        "augment",
+        "tier1"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_faceEnhancement",
+      "name": "Face Enhancement",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "1",
+      "maxRank": 1,
+      "valueType": "integer",
+      "group": "talents.augment",
+      "description": "Unlock elemental face upgrades for dice",
+      "tier": 2,
+      "path": "augment",
+      "adjacent": [
+        "talent_weightedDice",
+        "talent_legendaryFaces"
+      ],
+      "tags": [
+        "talent",
+        "augment",
+        "tier2"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_criticalRoll",
+      "name": "Critical Roll",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.augment",
+      "description": "+1% crit chance per rank (3x multiplier)",
+      "tier": 2,
+      "path": "augment",
+      "adjacent": [
+        "talent_luckyCharm",
+        "talent_criticalCascade"
+      ],
+      "tags": [
+        "talent",
+        "augment",
+        "tier2"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_loadedDice",
+      "name": "Loaded Dice",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "3",
+      "maxRank": 3,
+      "valueType": "integer",
+      "group": "talents.augment",
+      "description": "Can 'lock' one additional face per rank",
+      "tier": 2,
+      "path": "augment",
+      "adjacent": [
+        "talent_denseCore",
+        "talent_empoweredState"
+      ],
+      "tags": [
+        "talent",
+        "augment",
+        "tier2"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_pipInflation",
+      "name": "Pip Inflation",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.augment",
+      "description": "Each pip worth +10% base value per rank",
+      "tier": 2,
+      "path": "augment",
+      "adjacent": [
+        "talent_fortunesFavor",
+        "talent_perfectRoll"
+      ],
+      "tags": [
+        "talent",
+        "augment",
+        "tier2"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_gravityWell",
+      "name": "Gravity Well",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.augment",
+      "description": "+2% chance per rank for higher numbers",
+      "tier": 2,
+      "path": "augment",
+      "adjacent": [
+        "talent_innerStrength",
+        "talent_perfectRoll"
+      ],
+      "tags": [
+        "talent",
+        "augment",
+        "tier2"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_legendaryFaces",
+      "name": "Legendary Faces",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "1",
+      "maxRank": 1,
+      "valueType": "integer",
+      "group": "talents.augment",
+      "description": "Unlock legendary face tier with unique effects",
+      "tier": 3,
+      "path": "augment",
+      "adjacent": [
+        "talent_faceEnhancement",
+        "talent_perfectRoll"
+      ],
+      "tags": [
+        "talent",
+        "augment",
+        "tier3"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_criticalCascade",
+      "name": "Critical Cascade",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.augment",
+      "description": "Crits have +5% chance per rank to trigger another crit",
+      "tier": 3,
+      "path": "augment",
+      "adjacent": [
+        "talent_criticalRoll",
+        "talent_perfectRoll"
+      ],
+      "tags": [
+        "talent",
+        "augment",
+        "tier3"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_empoweredState",
+      "name": "Empowered State",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.augment",
+      "description": "After max value roll, next 5 rolls +10% per rank",
+      "tier": 3,
+      "path": "augment",
+      "adjacent": [
+        "talent_loadedDice",
+        "talent_perfectRoll"
+      ],
+      "tags": [
+        "talent",
+        "augment",
+        "tier3"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_overdrive",
+      "name": "Overdrive",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "5",
+      "maxRank": 5,
+      "valueType": "integer",
+      "group": "talents.augment",
+      "description": "All roll values +20% per rank when luck > 1000",
+      "tier": 3,
+      "path": "augment",
+      "adjacent": [
+        "talent_gravityWell",
+        "talent_perfectRoll"
+      ],
+      "tags": [
+        "talent",
+        "augment",
+        "tier3"
+      ]
+    },
+    {
+      "type": "state",
+      "id": "talent_perfectRoll",
+      "name": "Perfect Roll",
+      "subType": "talent",
+      "initial": "0",
+      "min": "0",
+      "max": "1",
+      "maxRank": 1,
+      "valueType": "integer",
+      "group": "talents.augment",
+      "description": "Once per prestige, automatically roll maximum possible value",
+      "tier": 4,
+      "path": "augment",
+      "adjacent": [
+        "talent_legendaryFaces",
+        "talent_criticalCascade",
+        "talent_empoweredState",
+        "talent_overdrive"
+      ],
+      "tags": [
+        "talent",
+        "augment",
+        "tier4",
+        "capstone"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "augmentTier1Points",
+      "name": "Augment Tier 1 Points",
+      "expression": "talent_weightedDice + talent_luckyCharm + talent_denseCore + talent_fortunesFavor + talent_innerStrength",
+      "tags": [
+        "tier",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "augmentTier2Points",
+      "name": "Augment Tier 2 Points",
+      "expression": "talent_faceEnhancement + talent_criticalRoll + talent_loadedDice + talent_pipInflation + talent_gravityWell",
+      "tags": [
+        "tier",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "augmentTier3Points",
+      "name": "Augment Tier 3 Points",
+      "expression": "talent_legendaryFaces + talent_criticalCascade + talent_empoweredState + talent_overdrive",
+      "tags": [
+        "tier",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "augmentTier2Unlocked",
+      "name": "Augment Tier 2 Unlocked",
+      "expression": "augmentTier1Points >= 5 && !augmentPath_locked",
+      "tags": [
+        "tier",
+        "augment",
+        "unlock"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "augmentTier3Unlocked",
+      "name": "Augment Tier 3 Unlocked",
+      "expression": "augmentTier2Points >= 10 && !augmentPath_locked",
+      "tags": [
+        "tier",
+        "augment",
+        "unlock"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "augmentTier4Unlocked",
+      "name": "Augment Tier 4 Unlocked",
+      "expression": "augmentTier3Points >= 8 && !augmentPath_locked",
+      "tags": [
+        "tier",
+        "augment",
+        "unlock"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_weightedDice",
+      "expression": "1 * (1 + talent_weightedDice * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_luckyCharm",
+      "expression": "1 * (1 + talent_luckyCharm * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_denseCore",
+      "expression": "1 * (1 + talent_denseCore * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_fortunesFavor",
+      "expression": "1 * (1 + talent_fortunesFavor * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_innerStrength",
+      "expression": "1 * (1 + talent_innerStrength * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_faceEnhancement",
+      "expression": "5",
+      "tags": [
+        "cost",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_criticalRoll",
+      "expression": "2 * (1 + talent_criticalRoll * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_loadedDice",
+      "expression": "4 * (1 + talent_loadedDice * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_pipInflation",
+      "expression": "2 * (1 + talent_pipInflation * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_gravityWell",
+      "expression": "2 * (1 + talent_gravityWell * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_legendaryFaces",
+      "expression": "8",
+      "tags": [
+        "cost",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_criticalCascade",
+      "expression": "4 * (1 + talent_criticalCascade * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_empoweredState",
+      "expression": "4 * (1 + talent_empoweredState * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_overdrive",
+      "expression": "4 * (1 + talent_overdrive * 0.5)",
+      "tags": [
+        "cost",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "cost_perfectRoll",
+      "expression": "20",
+      "tags": [
+        "cost",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_weightedDice",
+      "expression": "!augmentPath_locked && talent_weightedDice < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_luckyCharm",
+      "expression": "!augmentPath_locked && talent_luckyCharm < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_denseCore",
+      "expression": "!augmentPath_locked && talent_denseCore < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_fortunesFavor",
+      "expression": "!augmentPath_locked && talent_fortunesFavor < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_innerStrength",
+      "expression": "!augmentPath_locked && talent_innerStrength < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_faceEnhancement",
+      "expression": "augmentTier2Unlocked && talent_faceEnhancement < 1",
+      "tags": [
+        "availability",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_criticalRoll",
+      "expression": "augmentTier2Unlocked && talent_criticalRoll < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_loadedDice",
+      "expression": "augmentTier2Unlocked && talent_loadedDice < 3",
+      "tags": [
+        "availability",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_pipInflation",
+      "expression": "augmentTier2Unlocked && talent_pipInflation < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_gravityWell",
+      "expression": "augmentTier2Unlocked && talent_gravityWell < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_legendaryFaces",
+      "expression": "augmentTier3Unlocked && talent_legendaryFaces < 1",
+      "tags": [
+        "availability",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_criticalCascade",
+      "expression": "augmentTier3Unlocked && talent_criticalCascade < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_empoweredState",
+      "expression": "augmentTier3Unlocked && talent_empoweredState < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_overdrive",
+      "expression": "augmentTier3Unlocked && talent_overdrive < 5",
+      "tags": [
+        "availability",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "canPurchase_perfectRoll",
+      "expression": "augmentTier4Unlocked && talent_perfectRoll < 1",
+      "tags": [
+        "availability",
+        "talent",
+        "augment"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_weightedDice",
+      "name": "Purchase Weighted Dice",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_weightedDice"
+      },
+      "condition": "canPurchase_weightedDice",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_weightedDice",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "augmentPath_hasPoints",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "pathsChosen",
+          "value": "fracturePath_hasPoints + velocityPath_hasPoints + augmentPath_hasPoints"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "augment"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_luckyCharm",
+      "name": "Purchase Lucky Charm",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_luckyCharm"
+      },
+      "condition": "canPurchase_luckyCharm",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_luckyCharm",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "augmentPath_hasPoints",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "pathsChosen",
+          "value": "fracturePath_hasPoints + velocityPath_hasPoints + augmentPath_hasPoints"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "augment"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_denseCore",
+      "name": "Purchase Dense Core",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_denseCore"
+      },
+      "condition": "canPurchase_denseCore",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_denseCore",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "augmentPath_hasPoints",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "pathsChosen",
+          "value": "fracturePath_hasPoints + velocityPath_hasPoints + augmentPath_hasPoints"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "augment"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_fortunesFavor",
+      "name": "Purchase Fortune's Favor",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_fortunesFavor"
+      },
+      "condition": "canPurchase_fortunesFavor",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_fortunesFavor",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "augmentPath_hasPoints",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "pathsChosen",
+          "value": "fracturePath_hasPoints + velocityPath_hasPoints + augmentPath_hasPoints"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "augment"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_innerStrength",
+      "name": "Purchase Inner Strength",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_innerStrength"
+      },
+      "condition": "canPurchase_innerStrength",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_innerStrength",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "augmentPath_hasPoints",
+          "value": "1"
+        },
+        {
+          "type": "set",
+          "target": "pathsChosen",
+          "value": "fracturePath_hasPoints + velocityPath_hasPoints + augmentPath_hasPoints"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "augment"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_faceEnhancement",
+      "name": "Purchase Face Enhancement",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_faceEnhancement"
+      },
+      "condition": "canPurchase_faceEnhancement",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_faceEnhancement",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "augment"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_criticalRoll",
+      "name": "Purchase Critical Roll",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_criticalRoll"
+      },
+      "condition": "canPurchase_criticalRoll",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_criticalRoll",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "augment"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_loadedDice",
+      "name": "Purchase Loaded Dice",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_loadedDice"
+      },
+      "condition": "canPurchase_loadedDice",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_loadedDice",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "augment"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_pipInflation",
+      "name": "Purchase Pip Inflation",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_pipInflation"
+      },
+      "condition": "canPurchase_pipInflation",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_pipInflation",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "augment"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_gravityWell",
+      "name": "Purchase Gravity Well",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_gravityWell"
+      },
+      "condition": "canPurchase_gravityWell",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_gravityWell",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "augment"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_legendaryFaces",
+      "name": "Purchase Legendary Faces",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_legendaryFaces"
+      },
+      "condition": "canPurchase_legendaryFaces",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_legendaryFaces",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "augment"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_criticalCascade",
+      "name": "Purchase Critical Cascade",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_criticalCascade"
+      },
+      "condition": "canPurchase_criticalCascade",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_criticalCascade",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "augment"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_empoweredState",
+      "name": "Purchase Empowered State",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_empoweredState"
+      },
+      "condition": "canPurchase_empoweredState",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_empoweredState",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "augment"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_overdrive",
+      "name": "Purchase Overdrive",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_overdrive"
+      },
+      "condition": "canPurchase_overdrive",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_overdrive",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "augment"
+      ]
+    },
+    {
+      "type": "trigger",
+      "id": "purchase_perfectRoll",
+      "name": "Purchase Perfect Roll",
+      "when": {
+        "type": "player"
+      },
+      "cost": {
+        "talentPoints": "cost_perfectRoll"
+      },
+      "condition": "canPurchase_perfectRoll",
+      "mutations": [
+        {
+          "type": "add",
+          "target": "talent_perfectRoll",
+          "value": "1"
+        }
+      ],
+      "tags": [
+        "talent",
+        "purchase",
+        "augment"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "mod_weightedDice_faceBonus",
+      "name": "Weighted Dice Face Bonus",
+      "subType": "modifier",
+      "target": "baseLuckPerRoll",
+      "stage": "flat",
+      "expression": "talent_weightedDice",
+      "condition": "talent_weightedDice > 0",
+      "priority": 10,
+      "tags": [
+        "modifier",
+        "talent",
+        "augment",
+        "luck"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "mod_innerStrength_luck",
+      "name": "Inner Strength Luck Bonus",
+      "subType": "modifier",
+      "target": "luckProduction",
+      "stage": "multiplicative",
+      "expression": "1 + (talent_innerStrength * 0.1)",
+      "condition": "talent_innerStrength > 0",
+      "priority": 10,
+      "tags": [
+        "modifier",
+        "talent",
+        "augment",
+        "luck"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "mod_denseCore_luck",
+      "name": "Dense Core Luck Bonus",
+      "subType": "modifier",
+      "target": "luckProduction",
+      "stage": "multiplicative",
+      "expression": "1 + (talent_denseCore * 0.05)",
+      "condition": "talent_denseCore > 0",
+      "priority": 20,
+      "tags": [
+        "modifier",
+        "talent",
+        "augment",
+        "luck"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "mod_fortunesFavor_luck",
+      "name": "Fortune's Favor Luck Multiplier",
+      "subType": "modifier",
+      "target": "luckProduction",
+      "stage": "multiplicative",
+      "expression": "1 + (talent_fortunesFavor * 0.02)",
+      "condition": "talent_fortunesFavor > 0",
+      "priority": 30,
+      "tags": [
+        "modifier",
+        "talent",
+        "augment",
+        "luck"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "mod_criticalRoll_critChance",
+      "name": "Critical Roll Crit Chance",
+      "subType": "modifier",
+      "target": "critChance",
+      "stage": "flat",
+      "expression": "talent_criticalRoll * 0.01",
+      "condition": "talent_criticalRoll > 0",
+      "priority": 10,
+      "tags": [
+        "modifier",
+        "talent",
+        "augment",
+        "crit"
+      ]
+    },
+    {
+      "type": "logic",
+      "id": "mod_pipInflation_luck",
+      "name": "Pip Inflation Luck Bonus",
+      "subType": "modifier",
+      "target": "luckProduction",
+      "stage": "multiplicative",
+      "expression": "1 + (talent_pipInflation * 0.1 * lastRollResult)",
+      "condition": "talent_pipInflation > 0",
+      "priority": 40,
+      "tags": [
+        "modifier",
+        "talent",
+        "augment",
+        "luck"
+      ]
+    }
+  ]
+}

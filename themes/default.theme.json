@@ -1,0 +1,266 @@
+{
+  "_comment": "I have read and understand the core architecture of this system before applying changes.",
+  "id": "default",
+  "name": "Default",
+  "description": "Classic blue fantasy theme",
+  "version": "1.0.0",
+
+  "colors": {
+    "background": {
+      "primary": "#1a1a2e",
+      "secondary": "#16213e",
+      "tertiary": "#0f3460",
+      "overlay": "#000000"
+    },
+    "foreground": {
+      "primary": "#f4f4f4",
+      "secondary": "#d4d4d4",
+      "muted": "#888888",
+      "disabled": "#555555"
+    },
+    "interactive": {
+      "default": "#4a90d9",
+      "hover": "#5ba0e9",
+      "active": "#3980c9",
+      "disabled": "#555555"
+    },
+    "semantic": {
+      "success": "#4caf50",
+      "warning": "#ffc107",
+      "error": "#f44336",
+      "info": "#2196f3"
+    },
+    "border": {
+      "default": "#357abd",
+      "focus": "#4a90d9",
+      "subtle": "#444444"
+    }
+  },
+
+  "typography": {
+    "fontFamily": {
+      "heading": "monospace",
+      "body": "monospace",
+      "mono": "monospace"
+    }
+  },
+
+  "components": {
+    "button": {
+      "variants": {
+        "primary": {
+          "default": {
+            "background": "#4a90d9",
+            "text": "#ffffff",
+            "border": "#357abd"
+          },
+          "hover": {
+            "background": "#5ba0e9",
+            "text": "#ffffff",
+            "border": "#4589cd",
+            "tint": "#7bc0ff"
+          },
+          "pressed": {
+            "background": "#3980c9",
+            "text": "#ffffff",
+            "border": "#256aad",
+            "tint": "#2970b9"
+          },
+          "disabled": {
+            "background": "#555555",
+            "text": "#888888",
+            "border": "#444444",
+            "tint": "#444444"
+          }
+        },
+        "secondary": {
+          "default": {
+            "background": "#555555",
+            "text": "#f4f4f4",
+            "border": "#444444"
+          },
+          "hover": {
+            "background": "#666666",
+            "text": "#ffffff",
+            "border": "#4a90d9",
+            "tint": "#777777"
+          },
+          "pressed": {
+            "background": "#444444",
+            "text": "#d4d4d4",
+            "border": "#333333",
+            "tint": "#333333"
+          },
+          "disabled": {
+            "background": "#444444",
+            "text": "#666666",
+            "border": "#333333",
+            "tint": "#333333"
+          }
+        }
+      },
+      "borderRadius": 8
+    },
+
+    "slider": {
+      "track": {
+        "backgroundColor": "#16213e",
+        "height": 24,
+        "borderRadius": 6
+      },
+      "fill": {
+        "backgroundColor": "#4a90d9"
+      },
+      "thumb": {
+        "backgroundColor": "#5ba0e9",
+        "size": 20,
+        "borderRadius": 10
+      },
+      "valueText": {
+        "color": "#ffffff",
+        "fontSize": 14,
+        "fontFamily": "monospace"
+      }
+    },
+
+    "toggle": {
+      "track": {
+        "width": 52,
+        "height": 28,
+        "borderRadius": 14,
+        "offColor": "#555555",
+        "onColor": "#4caf50"
+      },
+      "thumb": {
+        "color": "#f4f4f4",
+        "padding": 2
+      },
+      "animation": {
+        "duration": 100,
+        "easing": "easeOutQuad"
+      }
+    },
+
+    "panel": {
+      "variants": {
+        "primary": {
+          "backgroundColor": "#16213e",
+          "borderColor": "#357abd",
+          "borderWidth": 1,
+          "borderRadius": 8,
+          "padding": 16
+        },
+        "secondary": {
+          "backgroundColor": "#1a1a2e",
+          "borderColor": "#444444",
+          "borderWidth": 1,
+          "borderRadius": 8,
+          "padding": 16
+        },
+        "overlay": {
+          "backgroundColor": "#0f3460",
+          "borderColor": "#4a90d9",
+          "borderWidth": 1,
+          "borderRadius": 8,
+          "padding": 16
+        },
+        "tooltip": {
+          "backgroundColor": "#16213e",
+          "borderColor": "#357abd",
+          "borderWidth": 1,
+          "borderRadius": 6,
+          "padding": 8
+        }
+      }
+    },
+
+    "text": {
+      "variants": {
+        "heading": {
+          "fontFamily": "monospace",
+          "fontSize": 20,
+          "fontWeight": 700,
+          "lineHeight": 1.2,
+          "color": "#f4f4f4"
+        },
+        "subheading": {
+          "fontFamily": "monospace",
+          "fontSize": 16,
+          "fontWeight": 500,
+          "lineHeight": 1.3,
+          "color": "#f4f4f4"
+        },
+        "body": {
+          "fontFamily": "monospace",
+          "fontSize": 14,
+          "fontWeight": 400,
+          "lineHeight": 1.5,
+          "color": "#d4d4d4"
+        },
+        "label": {
+          "fontFamily": "monospace",
+          "fontSize": 14,
+          "fontWeight": 500,
+          "lineHeight": 1.3,
+          "color": "#f4f4f4"
+        },
+        "caption": {
+          "fontFamily": "monospace",
+          "fontSize": 12,
+          "fontWeight": 400,
+          "lineHeight": 1.4,
+          "color": "#888888"
+        },
+        "accent": {
+          "fontFamily": "monospace",
+          "fontSize": 14,
+          "fontWeight": 500,
+          "lineHeight": 1.5,
+          "color": "#4a90d9"
+        }
+      }
+    },
+
+    "divider": {
+      "color": "#357abd",
+      "thickness": 1,
+      "margin": {
+        "vertical": 16,
+        "horizontal": 0
+      }
+    }
+  },
+
+  "textures": {
+    "atlases": {},
+    "panel": {
+      "primary": null,
+      "secondary": null,
+      "overlay": null,
+      "tooltip": null
+    },
+    "button": {
+      "primary": {
+        "default": null,
+        "hover": null,
+        "pressed": null,
+        "disabled": null
+      },
+      "secondary": {
+        "default": null,
+        "hover": null,
+        "pressed": null,
+        "disabled": null
+      },
+      "ghost": {
+        "default": null,
+        "hover": null,
+        "pressed": null,
+        "disabled": null
+      }
+    },
+    "iconButton": {},
+    "banner": {},
+    "slot": {}
+  }
+}
