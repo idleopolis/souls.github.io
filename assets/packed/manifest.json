@@ -1,0 +1,99 @@
+{
+  "bundles": [
+    {
+      "name": "default",
+      "assets": [
+        {
+          "alias": [
+            "dice/dice-face-1.jpg",
+            "dice-face-1.jpg"
+          ],
+          "src": [
+            "dice/dice-face-1-X-f9Jw@0.5x.jpg",
+            "dice/dice-face-1-Tbrlyg.jpg",
+            "dice/dice-face-1-Sq7SGg.webp",
+            "dice/dice-face-1-7_6kEA@0.5x.webp"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "dice/dice-face-2.jpg",
+            "dice-face-2.jpg"
+          ],
+          "src": [
+            "dice/dice-face-2-JGQ65Q@0.5x.webp",
+            "dice/dice-face-2-4cTeKg@0.5x.jpg",
+            "dice/dice-face-2-2D8TmA.jpg",
+            "dice/dice-face-2--LRsbw.webp"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "dice/dice-face-3.jpg",
+            "dice-face-3.jpg"
+          ],
+          "src": [
+            "dice/dice-face-3-sMDTug@0.5x.jpg",
+            "dice/dice-face-3-P6o5JA.webp",
+            "dice/dice-face-3-J47OmQ.jpg",
+            "dice/dice-face-3-6XpV_g@0.5x.webp"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "dice/dice-face-4.jpg",
+            "dice-face-4.jpg"
+          ],
+          "src": [
+            "dice/dice-face-4-Yu_63Q.jpg",
+            "dice/dice-face-4-rlWJ-A@0.5x.webp",
+            "dice/dice-face-4-iZqOUw.webp",
+            "dice/dice-face-4-dFomTg@0.5x.jpg"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "dice/dice-face-5.jpg",
+            "dice-face-5.jpg"
+          ],
+          "src": [
+            "dice/dice-face-5-WJ4Ejg.jpg",
+            "dice/dice-face-5-u2MP8g.webp",
+            "dice/dice-face-5-Ti-uUg@0.5x.jpg",
+            "dice/dice-face-5-hb4WHA@0.5x.webp"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "dice/dice-face-6.jpg",
+            "dice-face-6.jpg"
+          ],
+          "src": [
+            "dice/dice-face-6-mt3XHQ@0.5x.webp",
+            "dice/dice-face-6-JIrB5Q.jpg",
+            "dice/dice-face-6-GhWJ-g@0.5x.jpg",
+            "dice/dice-face-6-fqeL4Q.webp"
+          ],
+          "data": {
+            "tags": {}
+          }
+        }
+      ]
+    }
+  ]
+}

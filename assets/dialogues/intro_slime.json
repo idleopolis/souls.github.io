@@ -1,0 +1,96 @@
+{
+  "id": "intro_slime",
+  "characters": {
+    "slime": {
+      "id": "slime",
+      "name": "Blobby",
+      "nameColor": 4444444,
+      "spriteSheet": {
+        "url": "./assets/generated/spritesheets/enemies/slime_basic_spritesheet.png",
+        "framesPerRow": 6,
+        "frameWidth": 341,
+        "frameHeight": 512,
+        "rows": 4,
+        "animationSpeed": 0.12,
+        "scale": 0.5
+      }
+    }
+  },
+  "startNode": "hello_1",
+  "nodes": [
+    {
+      "id": "hello_1",
+      "characterId": "slime",
+      "text": "*boing* *boing* Oh! A new adventurer!",
+      "position": "left",
+      "next": "hello_2"
+    },
+    {
+      "id": "hello_2",
+      "characterId": "slime",
+      "text": "Welcome to Lucky Loop! I'm Blobby, and I'll be your guide!",
+      "position": "left",
+      "next": "hello_3"
+    },
+    {
+      "id": "hello_3",
+      "characterId": "slime",
+      "text": "This world runs on luck - and the more dice you roll, the luckier you get!",
+      "position": "left",
+      "next": "hello_4"
+    },
+    {
+      "id": "hello_4",
+      "characterId": "slime",
+      "text": "Use your luck to unlock powerful talents and grow stronger!",
+      "position": "left",
+      "next": "hello_5"
+    },
+    {
+      "id": "hello_5",
+      "characterId": "slime",
+      "text": "Ready to start your adventure?",
+      "position": "left",
+      "choices": [
+        {
+          "id": "ready",
+          "text": "Let's roll!",
+          "next": "ready_response"
+        },
+        {
+          "id": "more_info",
+          "text": "Tell me more about dice...",
+          "next": "dice_info"
+        }
+      ]
+    },
+    {
+      "id": "dice_info",
+      "characterId": "slime",
+      "text": "Each die has different sides - more sides means bigger potential rolls!",
+      "position": "left",
+      "next": "dice_info_2"
+    },
+    {
+      "id": "dice_info_2",
+      "characterId": "slime",
+      "text": "You can unlock special dice with cool effects as you progress!",
+      "position": "left",
+      "next": "dice_info_3"
+    },
+    {
+      "id": "dice_info_3",
+      "characterId": "slime",
+      "text": "And when you get really strong, you might even battle monsters like me! *wobble*",
+      "position": "left",
+      "next": "ready_response"
+    },
+    {
+      "id": "ready_response",
+      "characterId": "slime",
+      "text": "*excited jiggle* Good luck out there! May the dice roll ever in your favor!",
+      "position": "left",
+      "next": null
+    }
+  ]
+}

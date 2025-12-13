@@ -1,0 +1,409 @@
+{
+  "_comment": "I have read and understand the core architecture of this system before applying changes.",
+  "id": "fantasy",
+  "name": "Fantasy",
+  "description": "Warm parchment and stone fantasy theme using Kenney Fantasy UI tileset",
+  "version": "1.0.0",
+
+  "colors": {
+    "background": {
+      "primary": "#3d2b1f",
+      "secondary": "#5c4033",
+      "tertiary": "#8b7355",
+      "overlay": "#000000"
+    },
+    "foreground": {
+      "primary": "#f4f4f4",
+      "secondary": "#d4d4d4",
+      "muted": "#3d2b1f",
+      "disabled": "#666666"
+    },
+    "interactive": {
+      "default": "#d4a017",
+      "hover": "#ffc125",
+      "active": "#a67c00",
+      "disabled": "#8b8b8b"
+    },
+    "semantic": {
+      "success": "#4caf50",
+      "warning": "#ffc107",
+      "error": "#b13e53",
+      "info": "#2196f3"
+    },
+    "border": {
+      "default": "#8b6914",
+      "focus": "#d4a017",
+      "subtle": "#8b7355"
+    }
+  },
+
+  "typography": {
+    "fontFamily": {
+      "heading": "Arial, sans-serif",
+      "body": "Arial, sans-serif",
+      "mono": "monospace"
+    }
+  },
+
+  "components": {
+    "button": {
+      "variants": {
+        "primary": {
+          "default": {
+            "background": "#c4a574",
+            "text": "#3d2b1f",
+            "border": "#8b6914"
+          },
+          "hover": {
+            "background": "#d4b896",
+            "text": "#3d2b1f",
+            "border": "#d4a017",
+            "tint": "#ffe0a0"
+          },
+          "pressed": {
+            "background": "#a48554",
+            "text": "#3d2b1f",
+            "border": "#a67c00",
+            "tint": "#c0a060"
+          },
+          "disabled": {
+            "background": "#8b8b8b",
+            "text": "#d4d4d4",
+            "border": "#4a4a4a",
+            "tint": "#888888"
+          }
+        },
+        "secondary": {
+          "default": {
+            "background": "#6b6b6b",
+            "text": "#f4f4f4",
+            "border": "#4a4a4a"
+          },
+          "hover": {
+            "background": "#8b8b8b",
+            "text": "#f4f4f4",
+            "border": "#d4a017",
+            "tint": "#b0b0b0"
+          },
+          "pressed": {
+            "background": "#6b6b6b",
+            "text": "#d4d4d4",
+            "border": "#4a4a4a",
+            "tint": "#707070"
+          },
+          "disabled": {
+            "background": "#8b8b8b",
+            "text": "#d4d4d4",
+            "border": "#4a4a4a",
+            "tint": "#666666"
+          }
+        }
+      },
+      "borderRadius": 10
+    },
+
+    "slider": {
+      "track": {
+        "backgroundColor": "#5c4033",
+        "height": 24,
+        "borderRadius": 6
+      },
+      "fill": {
+        "backgroundColor": "#d4a017"
+      },
+      "thumb": {
+        "backgroundColor": "#c4a574",
+        "size": 20,
+        "borderRadius": 10
+      },
+      "valueText": {
+        "color": "#3d2b1f",
+        "fontSize": 14,
+        "fontFamily": "Arial, sans-serif"
+      }
+    },
+
+    "toggle": {
+      "track": {
+        "width": 52,
+        "height": 28,
+        "borderRadius": 14,
+        "offColor": "#6b6b6b",
+        "onColor": "#4caf50"
+      },
+      "thumb": {
+        "color": "#d4b896",
+        "padding": 2
+      },
+      "animation": {
+        "duration": 100,
+        "easing": "easeOutQuad"
+      }
+    },
+
+    "panel": {
+      "variants": {
+        "primary": {
+          "backgroundColor": "#c4a574",
+          "borderColor": "#8b6914",
+          "borderWidth": 1,
+          "borderRadius": 10,
+          "padding": 16
+        },
+        "secondary": {
+          "backgroundColor": "#6b6b6b",
+          "borderColor": "#4a4a4a",
+          "borderWidth": 1,
+          "borderRadius": 10,
+          "padding": 16
+        },
+        "overlay": {
+          "backgroundColor": "#3d2b1f",
+          "borderColor": "#4a4a4a",
+          "borderWidth": 1,
+          "borderRadius": 10,
+          "padding": 16
+        },
+        "tooltip": {
+          "backgroundColor": "#c4a574",
+          "borderColor": "#8b6914",
+          "borderWidth": 1,
+          "borderRadius": 10,
+          "padding": 8
+        }
+      }
+    },
+
+    "text": {
+      "variants": {
+        "heading": {
+          "fontFamily": "Arial, sans-serif",
+          "fontSize": 20,
+          "fontWeight": 700,
+          "lineHeight": 1.2,
+          "color": "#3d2b1f"
+        },
+        "subheading": {
+          "fontFamily": "Arial, sans-serif",
+          "fontSize": 16,
+          "fontWeight": 500,
+          "lineHeight": 1.3,
+          "color": "#3d2b1f"
+        },
+        "body": {
+          "fontFamily": "Arial, sans-serif",
+          "fontSize": 14,
+          "fontWeight": 400,
+          "lineHeight": 1.5,
+          "color": "#3d2b1f"
+        },
+        "label": {
+          "fontFamily": "Arial, sans-serif",
+          "fontSize": 14,
+          "fontWeight": 500,
+          "lineHeight": 1.3,
+          "color": "#3d2b1f"
+        },
+        "caption": {
+          "fontFamily": "Arial, sans-serif",
+          "fontSize": 12,
+          "fontWeight": 400,
+          "lineHeight": 1.4,
+          "color": "#d4d4d4"
+        },
+        "accent": {
+          "fontFamily": "Arial, sans-serif",
+          "fontSize": 14,
+          "fontWeight": 500,
+          "lineHeight": 1.5,
+          "color": "#d4a017"
+        }
+      }
+    },
+
+    "divider": {
+      "color": "#8b6914",
+      "thickness": 1,
+      "margin": {
+        "vertical": 16,
+        "horizontal": 0
+      }
+    }
+  },
+
+  "atlas": {
+    "name": "fantasy-ui",
+    "path": "./assets/base/fantasy-ui/atlas/fantasy-ui-packed.json"
+  },
+
+  "textures": {
+    "atlases": {
+      "fantasy-ui": {
+        "path": "./assets/base/fantasy-ui/atlas/fantasy-ui-packed.json"
+      }
+    },
+
+    "panel": {
+      "primary": {
+        "type": "9slice",
+        "ref": { "atlas": "fantasy-ui", "frame": "panel-beige" },
+        "sliceInset": 8
+      },
+      "secondary": {
+        "type": "9slice",
+        "ref": { "atlas": "fantasy-ui", "frame": "panel-brown" },
+        "sliceInset": 8
+      },
+      "overlay": {
+        "type": "9slice",
+        "ref": { "atlas": "fantasy-ui", "frame": "panel-brown-inset" },
+        "sliceInset": 8
+      },
+      "tooltip": {
+        "type": "9slice",
+        "ref": { "atlas": "fantasy-ui", "frame": "panel-beige-inset" },
+        "sliceInset": 6
+      }
+    },
+
+    "button": {
+      "primary": {
+        "default": {
+          "type": "horizontal",
+          "left": { "atlas": "fantasy-ui", "frame": "banner-red-folded-l" },
+          "center": { "atlas": "fantasy-ui", "frame": "banner-red-folded-c" },
+          "right": { "atlas": "fantasy-ui", "frame": "banner-red-folded-r" }
+        },
+        "hover": {
+          "type": "horizontal",
+          "left": { "atlas": "fantasy-ui", "frame": "banner-red-folded-l" },
+          "center": { "atlas": "fantasy-ui", "frame": "banner-red-folded-c" },
+          "right": { "atlas": "fantasy-ui", "frame": "banner-red-folded-r" }
+        },
+        "pressed": {
+          "type": "horizontal",
+          "left": { "atlas": "fantasy-ui", "frame": "banner-red-folded-l" },
+          "center": { "atlas": "fantasy-ui", "frame": "banner-red-folded-c" },
+          "right": { "atlas": "fantasy-ui", "frame": "banner-red-folded-r" }
+        },
+        "disabled": {
+          "type": "horizontal",
+          "left": { "atlas": "fantasy-ui", "frame": "bar-blue-border-l" },
+          "center": { "atlas": "fantasy-ui", "frame": "bar-blue-border-c" },
+          "right": { "atlas": "fantasy-ui", "frame": "bar-blue-border-r" }
+        }
+      },
+      "secondary": {
+        "default": {
+          "type": "horizontal",
+          "left": { "atlas": "fantasy-ui", "frame": "bar-blue-rivet-l" },
+          "center": { "atlas": "fantasy-ui", "frame": "bar-blue-rivet-c" },
+          "right": { "atlas": "fantasy-ui", "frame": "bar-blue-rivet-r" }
+        },
+        "hover": {
+          "type": "horizontal",
+          "left": { "atlas": "fantasy-ui", "frame": "bar-blue-rivet-l" },
+          "center": { "atlas": "fantasy-ui", "frame": "bar-blue-rivet-c" },
+          "right": { "atlas": "fantasy-ui", "frame": "bar-blue-rivet-r" }
+        },
+        "pressed": {
+          "type": "horizontal",
+          "left": { "atlas": "fantasy-ui", "frame": "bar-blue-rivet-l" },
+          "center": { "atlas": "fantasy-ui", "frame": "bar-blue-rivet-c" },
+          "right": { "atlas": "fantasy-ui", "frame": "bar-blue-rivet-r" }
+        },
+        "disabled": {
+          "type": "horizontal",
+          "left": { "atlas": "fantasy-ui", "frame": "bar-blue-border-l" },
+          "center": { "atlas": "fantasy-ui", "frame": "bar-blue-border-c" },
+          "right": { "atlas": "fantasy-ui", "frame": "bar-blue-border-r" }
+        }
+      },
+      "ghost": {
+        "default": null,
+        "hover": null,
+        "pressed": null,
+        "disabled": null
+      }
+    },
+
+    "iconButton": {
+      "circle": {
+        "type": "sprite",
+        "ref": { "atlas": "fantasy-ui", "frame": "btn-circle-beige" }
+      },
+      "circleOutline": {
+        "type": "sprite",
+        "ref": { "atlas": "fantasy-ui", "frame": "btn-circle-beige-border" }
+      },
+      "hexagon": {
+        "type": "sprite",
+        "ref": { "atlas": "fantasy-ui", "frame": "hex-beige" }
+      },
+      "hexagonOutline": {
+        "type": "sprite",
+        "ref": { "atlas": "fantasy-ui", "frame": "hex-beige-border" }
+      },
+      "octagon": {
+        "type": "sprite",
+        "ref": { "atlas": "fantasy-ui", "frame": "btn-octagon-red" }
+      }
+    },
+
+    "banner": {
+      "primary": {
+        "type": "horizontal",
+        "left": { "atlas": "fantasy-ui", "frame": "banner-red-folded-l" },
+        "center": { "atlas": "fantasy-ui", "frame": "banner-red-folded-c" },
+        "right": { "atlas": "fantasy-ui", "frame": "banner-red-folded-r" }
+      },
+      "secondary": {
+        "type": "horizontal",
+        "left": { "atlas": "fantasy-ui", "frame": "banner-red-hanging-l" },
+        "center": { "atlas": "fantasy-ui", "frame": "banner-red-hanging-c" },
+        "right": { "atlas": "fantasy-ui", "frame": "banner-red-hanging-r" }
+      }
+    },
+
+    "slot": {
+      "default": {
+        "type": "9slice",
+        "ref": { "atlas": "fantasy-ui", "frame": "slot-beige" },
+        "sliceInset": 4
+      },
+      "active": {
+        "type": "9slice",
+        "ref": { "atlas": "fantasy-ui", "frame": "slot-blue-inset-active" },
+        "sliceInset": 4
+      },
+      "grid": {
+        "type": "9slice",
+        "ref": { "atlas": "fantasy-ui", "frame": "slot-beige-grid" },
+        "sliceInset": 4
+      }
+    },
+
+    "custom": {
+      "backgroundBeige": {
+        "type": "9slice",
+        "ref": { "atlas": "fantasy-ui", "frame": "panel-beige" },
+        "sliceInset": 8
+      },
+      "backgroundBrown": {
+        "type": "9slice",
+        "ref": { "atlas": "fantasy-ui", "frame": "panel-brown" },
+        "sliceInset": 8
+      },
+      "backgroundBeigeInset": {
+        "type": "9slice",
+        "ref": { "atlas": "fantasy-ui", "frame": "panel-beige-inset" },
+        "sliceInset": 6
+      },
+      "backgroundBrownInset": {
+        "type": "9slice",
+        "ref": { "atlas": "fantasy-ui", "frame": "panel-brown-inset" },
+        "sliceInset": 6
+      }
+    }
+  }
+}

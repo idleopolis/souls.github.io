@@ -1,0 +1,266 @@
+{
+  "_comment": "I have read and understand the core architecture of this system before applying changes.",
+  "id": "spooky",
+  "name": "Dark & Spooky",
+  "description": "Gothic horror theme with ghostly glows and blood accents",
+  "version": "1.0.0",
+
+  "colors": {
+    "background": {
+      "primary": "#0d0a14",
+      "secondary": "#1a1424",
+      "tertiary": "#2d2438",
+      "overlay": "#000000"
+    },
+    "foreground": {
+      "primary": "#e8e4d9",
+      "secondary": "#a39e93",
+      "muted": "#5a5550",
+      "disabled": "#5a5550"
+    },
+    "interactive": {
+      "default": "#4ecdc4",
+      "hover": "#7ef9ef",
+      "active": "#2a9d8f",
+      "disabled": "#555555"
+    },
+    "semantic": {
+      "success": "#4ecdc4",
+      "warning": "#f39c12",
+      "error": "#c41e3a",
+      "info": "#4ecdc4"
+    },
+    "border": {
+      "default": "#4a4458",
+      "focus": "#4ecdc4",
+      "subtle": "#2d2438"
+    }
+  },
+
+  "typography": {
+    "fontFamily": {
+      "heading": "monospace",
+      "body": "monospace",
+      "mono": "monospace"
+    }
+  },
+
+  "components": {
+    "button": {
+      "variants": {
+        "primary": {
+          "default": {
+            "background": "#2d2438",
+            "text": "#e8e4d9",
+            "border": "#4ecdc4"
+          },
+          "hover": {
+            "background": "#3d3448",
+            "text": "#ffffff",
+            "border": "#7ef9ef",
+            "tint": "#7ef9ef"
+          },
+          "pressed": {
+            "background": "#1a1424",
+            "text": "#a39e93",
+            "border": "#2a9d8f",
+            "tint": "#2a9d8f"
+          },
+          "disabled": {
+            "background": "#1a1424",
+            "text": "#5a5550",
+            "border": "#2d2438",
+            "tint": "#666666"
+          }
+        },
+        "secondary": {
+          "default": {
+            "background": "#1a1424",
+            "text": "#a39e93",
+            "border": "#2d2438"
+          },
+          "hover": {
+            "background": "#2d2438",
+            "text": "#e8e4d9",
+            "border": "#4ecdc4",
+            "tint": "#3d3448"
+          },
+          "pressed": {
+            "background": "#0d0a14",
+            "text": "#a39e93",
+            "border": "#2a9d8f",
+            "tint": "#1a1424"
+          },
+          "disabled": {
+            "background": "#0d0a14",
+            "text": "#5a5550",
+            "border": "#1a1424",
+            "tint": "#0d0a14"
+          }
+        }
+      },
+      "borderRadius": 8
+    },
+
+    "slider": {
+      "track": {
+        "backgroundColor": "#1a1424",
+        "height": 24,
+        "borderRadius": 6
+      },
+      "fill": {
+        "backgroundColor": "#4ecdc4"
+      },
+      "thumb": {
+        "backgroundColor": "#7ef9ef",
+        "size": 20,
+        "borderRadius": 10
+      },
+      "valueText": {
+        "color": "#e8e4d9",
+        "fontSize": 14,
+        "fontFamily": "monospace"
+      }
+    },
+
+    "toggle": {
+      "track": {
+        "width": 52,
+        "height": 28,
+        "borderRadius": 14,
+        "offColor": "#2d2438",
+        "onColor": "#4ecdc4"
+      },
+      "thumb": {
+        "color": "#e8e4d9",
+        "padding": 2
+      },
+      "animation": {
+        "duration": 150,
+        "easing": "easeOutBack"
+      }
+    },
+
+    "panel": {
+      "variants": {
+        "primary": {
+          "backgroundColor": "#1a1424",
+          "borderColor": "#4a4458",
+          "borderWidth": 1,
+          "borderRadius": 8,
+          "padding": 16
+        },
+        "secondary": {
+          "backgroundColor": "#0d0a14",
+          "borderColor": "#2d2438",
+          "borderWidth": 1,
+          "borderRadius": 8,
+          "padding": 16
+        },
+        "overlay": {
+          "backgroundColor": "#0d0a14",
+          "borderColor": "#4ecdc4",
+          "borderWidth": 1,
+          "borderRadius": 8,
+          "padding": 16
+        },
+        "tooltip": {
+          "backgroundColor": "#0d0a14",
+          "borderColor": "#4ecdc4",
+          "borderWidth": 1,
+          "borderRadius": 6,
+          "padding": 8
+        }
+      }
+    },
+
+    "text": {
+      "variants": {
+        "heading": {
+          "fontFamily": "monospace",
+          "fontSize": 20,
+          "fontWeight": 700,
+          "lineHeight": 1.2,
+          "color": "#e8e4d9"
+        },
+        "subheading": {
+          "fontFamily": "monospace",
+          "fontSize": 16,
+          "fontWeight": 500,
+          "lineHeight": 1.3,
+          "color": "#e8e4d9"
+        },
+        "body": {
+          "fontFamily": "monospace",
+          "fontSize": 14,
+          "fontWeight": 400,
+          "lineHeight": 1.5,
+          "color": "#a39e93"
+        },
+        "label": {
+          "fontFamily": "monospace",
+          "fontSize": 14,
+          "fontWeight": 500,
+          "lineHeight": 1.3,
+          "color": "#e8e4d9"
+        },
+        "caption": {
+          "fontFamily": "monospace",
+          "fontSize": 12,
+          "fontWeight": 400,
+          "lineHeight": 1.4,
+          "color": "#5a5550"
+        },
+        "accent": {
+          "fontFamily": "monospace",
+          "fontSize": 14,
+          "fontWeight": 500,
+          "lineHeight": 1.5,
+          "color": "#4ecdc4"
+        }
+      }
+    },
+
+    "divider": {
+      "color": "#4a4458",
+      "thickness": 1,
+      "margin": {
+        "vertical": 16,
+        "horizontal": 0
+      }
+    }
+  },
+
+  "textures": {
+    "atlases": {},
+    "panel": {
+      "primary": null,
+      "secondary": null,
+      "overlay": null,
+      "tooltip": null
+    },
+    "button": {
+      "primary": {
+        "default": null,
+        "hover": null,
+        "pressed": null,
+        "disabled": null
+      },
+      "secondary": {
+        "default": null,
+        "hover": null,
+        "pressed": null,
+        "disabled": null
+      },
+      "ghost": {
+        "default": null,
+        "hover": null,
+        "pressed": null,
+        "disabled": null
+      }
+    },
+    "iconButton": {},
+    "banner": {},
+    "slot": {}
+  }
+}

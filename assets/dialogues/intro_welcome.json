@@ -1,0 +1,74 @@
+{
+  "id": "intro_welcome",
+  "characters": {
+    "guide": {
+      "id": "guide",
+      "name": "Lucky",
+      "nameColor": 5614165,
+      "emoji": "🎲"
+    }
+  },
+  "startNode": "welcome_1",
+  "nodes": [
+    {
+      "id": "welcome_1",
+      "characterId": "guide",
+      "text": "Welcome to Lucky Loop! I'm Lucky, your guide to fortune and glory!",
+      "position": "left",
+      "next": "welcome_2"
+    },
+    {
+      "id": "welcome_2",
+      "characterId": "guide",
+      "text": "Roll the dice to earn luck, then use that luck to unlock powerful upgrades!",
+      "position": "left",
+      "next": "welcome_3"
+    },
+    {
+      "id": "welcome_3",
+      "characterId": "guide",
+      "text": "The more you roll, the more luck you earn. It's that simple!",
+      "position": "left",
+      "next": "welcome_4"
+    },
+    {
+      "id": "welcome_4",
+      "characterId": "guide",
+      "text": "Ready to start your journey?",
+      "position": "left",
+      "choices": [
+        {
+          "id": "ready_yes",
+          "text": "Let's roll!",
+          "next": "ready_response"
+        },
+        {
+          "id": "ready_maybe",
+          "text": "Tell me more first...",
+          "next": "more_info"
+        }
+      ]
+    },
+    {
+      "id": "ready_response",
+      "characterId": "guide",
+      "text": "That's the spirit! Good luck out there!",
+      "position": "left",
+      "next": null
+    },
+    {
+      "id": "more_info",
+      "characterId": "guide",
+      "text": "As you progress, you'll unlock new dice types, special abilities, and even battle monsters!",
+      "position": "left",
+      "next": "more_info_2"
+    },
+    {
+      "id": "more_info_2",
+      "characterId": "guide",
+      "text": "Keep an eye on your talent tree - that's where you'll spend your luck to get stronger!",
+      "position": "left",
+      "next": "ready_response"
+    }
+  ]
+}
